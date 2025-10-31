@@ -282,7 +282,7 @@ namespace OrcaPod.Utils
         internal void TestWatchdog()
         {
             AddFile("../README.md");
-            this.FileChanged += (s, e) =>
+            FileChanged += (s, e) =>
             {
                 Console.WriteLine($"File changed: {e.FilePath}");
             };
