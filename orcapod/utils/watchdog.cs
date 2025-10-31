@@ -256,7 +256,7 @@ namespace OrcaPod.Utils
 
         private void ThrowIfDisposed()
         {
-            if (_disposed) throw new ObjectDisposedException(nameof(Watchdog));
+            ObjectDisposedException.ThrowIf(_disposed, nameof(Watchdog));
         }
 
         public void Dispose()
