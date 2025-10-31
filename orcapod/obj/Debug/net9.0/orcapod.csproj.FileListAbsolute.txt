@@ -1,0 +1,14 @@
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\bin\Debug\net9.0\orcapod.exe
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\bin\Debug\net9.0\orcapod.deps.json
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\bin\Debug\net9.0\orcapod.runtimeconfig.json
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\bin\Debug\net9.0\orcapod.dll
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\bin\Debug\net9.0\orcapod.pdb
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\orcapod.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\orcapod.AssemblyInfoInputs.cache
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\orcapod.AssemblyInfo.cs
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\orcapod.csproj.CoreCompileInputs.cache
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\orcapod.dll
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\refint\orcapod.dll
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\orcapod.pdb
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\orcapod.genruntimeconfig.cache
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\ref\orcapod.dll
