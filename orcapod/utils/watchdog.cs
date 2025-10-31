@@ -81,6 +81,8 @@ namespace OrcaPod.Utils
             var dir = Path.GetDirectoryName(fullPath) ?? throw new ArgumentException("Invalid file path");
             var fileName = Path.GetFileName(fullPath);
 
+            Console.WriteLine($"Watchdog: Adding file to watch: {fullPath}");
+
             var fileSet = _directoryFiles.GetOrAdd(dir, _ => new ConcurrentDictionary<string, byte>(StringComparer.OrdinalIgnoreCase));
             fileSet.TryAdd(fileName, 0);
 
@@ -275,6 +277,29 @@ namespace OrcaPod.Utils
             _lastEventTime.Clear();
             _disposed = true;
             GC.SuppressFinalize(this);
+        }
+
+        internal void TestWatchdog()
+        {
+            AddFile("../README.md");
+            this.FileChanged += (s, e) =>
+            {
+                Console.WriteLine($"File changed: {e.FilePath}");
+            };
+
+            Start();
+
+            // block until user hits Ctrl+C
+            var stop = new ManualResetEventSlim(false);
+            Console.CancelKeyPress += (s, e) =>
+            {
+                e.Cancel = true; // prevent immediate process termination
+                Console.WriteLine("Stopping...");
+                stop.Set();
+            };
+
+            Console.WriteLine("Watching files. Press Ctrl+C to exit.");
+            stop.Wait();
         }
     }
 }

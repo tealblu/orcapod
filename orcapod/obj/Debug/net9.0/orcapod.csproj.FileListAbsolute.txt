@@ -12,3 +12,4 @@ C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\refint\orcapod.dll
 C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\orcapod.pdb
 C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\orcapod.genruntimeconfig.cache
 C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\ref\orcapod.dll
+C:\Users\ckhar\Projects\orcapod-proj\orcapod\obj\Debug\net9.0\orcapod.sourcelink.json
