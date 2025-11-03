@@ -105,12 +105,14 @@ namespace OrcaPod.Service
                     }
                 }
 
+                // Check for cancellation
                 if (_cts?.IsCancellationRequested == true)
                 {
                     _logger.LogInformation("Cancellation requested, stopping MainService.");
                     try { Stop(); } catch { }
                 }
 
+                // Add any paths that need to be watched
                 if (pathsToWatch.Count > 0)
                 {
                     wd.Stop();
