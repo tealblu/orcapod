@@ -78,6 +78,8 @@ namespace OrcaPod.Service
                 _timer = null;
                 _cts?.Dispose();
                 _cts = null;
+                wd.Stop();
+                cbh = null!;
             }
         }
 
