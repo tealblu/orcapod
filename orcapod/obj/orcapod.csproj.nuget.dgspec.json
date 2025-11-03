@@ -1,30 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "c:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj": {}
+    "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj": {}
   },
   "projects": {
-    "c:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj": {
+    "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "c:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj",
+        "projectUniqueName": "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj",
         "projectName": "orcapod",
-        "projectPath": "c:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj",
+        "projectPath": "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj",
         "packagesPath": "C:\\Users\\ckhar\\.nuget\\packages\\",
-        "outputPath": "c:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\obj\\",
+        "outputPath": "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ckhar\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net9.0"
+          "net9.0-windows"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0": {
-            "targetAlias": "net9.0",
+          "net9.0-windows7.0": {
+            "targetAlias": "net9.0-windows",
             "projectReferences": {}
           }
         },
@@ -41,9 +41,17 @@
         "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
-        "net9.0": {
-          "targetAlias": "net9.0",
+        "net9.0-windows7.0": {
+          "targetAlias": "net9.0-windows",
           "dependencies": {
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.Extensions.Logging.Console": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
             "System.ServiceProcess.ServiceController": {
               "target": "Package",
               "version": "[9.0.10, )"
@@ -63,6 +71,9 @@
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"

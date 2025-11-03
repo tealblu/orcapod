@@ -1,47 +1,61 @@
-﻿using OrcaPod.Service;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using OrcaPod.Service;
 using OrcaPod;
+using OrcaPod.Utils;
 using System.Threading;
+using System.Runtime.InteropServices;
+using System;
+using System.Threading.Tasks;
 
 namespace OrcaPod
 {
     class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var service = new MainService();
 
-            if (Environment.UserInteractive)
+            // Support a simple command-line helper for local testing: --console forces running interactively
+            if (args != null && args.Length > 0)
             {
-                service.Start();
-                Console.WriteLine($"{service.ServiceName} running interactively. Press Enter to stop.");
-                Console.ReadLine();
-                service.Stop();
-                return;
-            }
-
-            // Try to discover a platform-specific host (implemented elsewhere).
-            var hostType = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(a =>
+                if (args.Contains("--console", StringComparer.OrdinalIgnoreCase))
                 {
-                    try { return a.GetTypes(); }
-                    catch { return Array.Empty<Type>(); }
-                })
-                .FirstOrDefault(t => typeof(IPlatformServiceHost).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract);
-
-            if (hostType != null)
-            {
-                var host = Activator.CreateInstance(hostType) as IPlatformServiceHost;
-                if (host != null)
-                {
-                    host.RunHosted(service);
-                    return;
+                    Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
                 }
             }
 
-            // Fallback: start and block indefinitely (allows running as a simple daemon)
-            service.Start();
-            Console.WriteLine($"{service.ServiceName} running in background (no platform host found).");
-            Thread.Sleep(Timeout.Infinite);
+            // No platform-specific daemon/service handling — always run the Generic Host.
+            // Tray icon support will be registered for interactive sessions on Windows and Linux.
+
+            // Otherwise, build a Generic Host. This covers interactive console runs, and the
+            // per-user system tray scenario on Windows (registered as a hosted service below).
+            var hostBuilder = Host.CreateDefaultBuilder(args)
+                .ConfigureServices((ctx, services) =>
+                {
+                    // Core cross-platform service and utilities
+                    services.AddSingleton(service);
+                    services.AddSingleton<Watchdog>();
+
+                    // Host the MainService via a BackgroundService so it integrates with the Generic Host lifecycle
+                    services.AddHostedService<HostedMainService>();
+
+                    // On Windows and Linux interactive sessions, add the system tray hosted service
+                    if ((RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                        && Environment.UserInteractive)
+                    {
+                        services.AddHostedService<TrayIconService>();
+                    }
+                })
+                .ConfigureLogging((ctx, lb) => lb.AddConsole());
+
+            var host = hostBuilder.Build();
+
+            // Run the host which starts hosted services and blocks until shutdown.
+            await host.RunAsync();
+
+            // Host ran and exited. All shutdown work is handled by hosted services.
         }
     }
 }
