@@ -15,7 +15,7 @@ namespace OrcaPod
     {
         public static async Task Main(string[] args)
         {
-            var service = new MainService();
+            // The logger will be injected by the DI container, so don't construct MainService manually.
 
             // Support simple CLI helpers:
             // --console : force interactive console behavior
@@ -76,7 +76,7 @@ namespace OrcaPod
                 .ConfigureServices((ctx, services) =>
                 {
                     // Core cross-platform service and utilities
-                    services.AddSingleton(service);
+                    services.AddSingleton<MainService>();
                     services.AddSingleton<Watchdog>();
 
                     // Host the MainService via a BackgroundService so it integrates with the Generic Host lifecycle
