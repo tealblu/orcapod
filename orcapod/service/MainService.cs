@@ -21,7 +21,6 @@ namespace OrcaPod.Service
         private int? _maxRuns;
 
         internal List<string> pathsToWatch = new List<string>();
-        private bool watchersInitialized = false;
 
         internal Watchdog wd = null!;
 
@@ -30,6 +29,12 @@ namespace OrcaPod.Service
         public MainService(ILogger<MainService> logger)
         {
             _logger = logger;
+            wd = new Watchdog(_logger);
+
+            wd.FileChanged += (s, e) =>
+            {
+                _logger.LogInformation($"File changed: {e}");
+            };
 
             // Allow a quick test mode via environment variable ORCAPOD_TEST=1
             if (Environment.GetEnvironmentVariable("ORCAPOD_TEST") == "1")
@@ -100,24 +105,24 @@ namespace OrcaPod.Service
                     try { Stop(); } catch { }
                 }
 
-                // Implement the rest of the periodic work here.
                 PrintStatusReport();
-                if (pathsToWatch.Count > 0 && !watchersInitialized)
+                if (pathsToWatch.Count > 0)
                 {
-                    wd = new Watchdog(_logger);
-                    wd.FileChanged += (s, e) =>
-                    {
-                        _logger.LogInformation($"File changed: {e}");
-                    };
+                    wd.Stop();
 
-                    foreach (var path in pathsToWatch)
+                    while (pathsToWatch.Count > 0)
                     {
+                        var path = pathsToWatch[0];
+                        pathsToWatch.RemoveAt(0);
                         wd.AddFile(path);
-                        _logger.LogInformation($"Watching path: {path}");
                     }
+                }
 
+                // Start the watchdog if not running
+                if (!wd.IsRunning)
+                {
                     wd.Start();
-                    watchersInitialized = true;
+                    _logger.LogInformation("Watchdog started.");
                 }
             }
             catch (Exception ex)
