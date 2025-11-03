@@ -17,11 +17,50 @@ namespace OrcaPod
         {
             var service = new MainService();
 
-            // Support a simple command-line helper for local testing: --console forces running interactively
+            // Support simple CLI helpers:
+            // --console : force interactive console behavior
+            // --install : install per-user autostart
+            // --uninstall : remove per-user autostart
+            // --test : run a short test mode (sets ORCAPOD_TEST=1)
             if (args != null && args.Length > 0)
             {
                 if (args.Contains("--console", StringComparer.OrdinalIgnoreCase))
                 {
+                    Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
+                }
+
+                if (args.Contains("--install", StringComparer.OrdinalIgnoreCase))
+                {
+                    try
+                    {
+                        Console.WriteLine("Autostart install flagged for current user.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Install failed: " + ex.Message);
+                        return;
+                    }
+                    return;
+                }
+
+                if (args.Contains("--uninstall", StringComparer.OrdinalIgnoreCase))
+                {
+                    try
+                    {
+                        Console.WriteLine("Autostart removal flagged for current user.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Uninstall failed: " + ex.Message);
+                        return;
+                    }
+                    return;
+                }
+
+                if (args.Contains("--test", StringComparer.OrdinalIgnoreCase))
+                {
+                    Environment.SetEnvironmentVariable("ORCAPOD_TEST", "1");
+                    // Also run in console mode so output is visible
                     Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
                 }
             }

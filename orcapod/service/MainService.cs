@@ -9,13 +9,23 @@ namespace OrcaPod.Service
     public class MainService : IDisposable
     {
         private Timer? _timer;
-        private readonly TimeSpan _interval = TimeSpan.FromSeconds(10);
+        private TimeSpan _interval = TimeSpan.FromSeconds(10);
         private int _running;
         private CancellationTokenSource? _cts;
+        private int _runCount;
+        private int? _maxRuns;
 
         public string ServiceName { get; } = "OrcapodMainService";
 
-        public MainService() { }
+        public MainService()
+        {
+            // Allow a quick test mode via environment variable ORCAPOD_TEST=1
+            if (Environment.GetEnvironmentVariable("ORCAPOD_TEST") == "1")
+            {
+                _interval = TimeSpan.FromSeconds(1);
+                _maxRuns = 5; // stop after a few iterations in test mode
+            }
+        }
 
         // Start the internal work loop
         public void Start()
@@ -53,6 +63,16 @@ namespace OrcaPod.Service
             {
                 // Put periodic work here.
                 // Keep this method cross-platform and lightweight.
+
+                if (_maxRuns.HasValue)
+                {
+                    var current = Interlocked.Increment(ref _runCount);
+                    if (current >= _maxRuns.Value)
+                    {
+                        // Stop after configured runs in test mode
+                        try { Stop(); } catch { }
+                    }
+                }
             }
             catch (Exception)
             {
