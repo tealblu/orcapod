@@ -85,6 +85,7 @@ namespace OrcaPod.Service
             {
                 // Put periodic work here.
                 // Keep this method cross-platform and lightweight.
+                PrintStatusReport();
 
                 var current = Interlocked.Increment(ref _runCount);
 
@@ -105,7 +106,6 @@ namespace OrcaPod.Service
                     try { Stop(); } catch { }
                 }
 
-                PrintStatusReport();
                 if (pathsToWatch.Count > 0)
                 {
                     wd.Stop();
