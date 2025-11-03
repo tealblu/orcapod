@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj": {}
+    "c:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj": {
+    "c:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj",
+        "projectUniqueName": "c:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj",
         "projectName": "orcapod",
-        "projectPath": "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj",
+        "projectPath": "c:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj",
         "packagesPath": "C:\\Users\\ckhar\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\obj\\",
+        "outputPath": "c:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\ckhar\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -43,6 +43,12 @@
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "System.ServiceProcess.ServiceController": {
+              "target": "Package",
+              "version": "[9.0.10, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
