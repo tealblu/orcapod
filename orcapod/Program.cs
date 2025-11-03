@@ -62,6 +62,8 @@ namespace OrcaPod
                     Environment.SetEnvironmentVariable("ORCAPOD_TEST", "1");
                     // Also run in console mode so output is visible
                     Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
+
+                    Console.WriteLine("Test mode enabled.");
                 }
             }
 
@@ -81,8 +83,7 @@ namespace OrcaPod
                     services.AddHostedService<HostedMainService>();
 
                     // On Windows and Linux interactive sessions, add the system tray hosted service
-                    if ((RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
-                        && Environment.UserInteractive)
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     {
                         services.AddHostedService<TrayIconService>();
                     }

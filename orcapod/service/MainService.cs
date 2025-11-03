@@ -64,6 +64,7 @@ namespace OrcaPod.Service
                 // Put periodic work here.
                 // Keep this method cross-platform and lightweight.
 
+                // Check for max runs in test mode
                 if (_maxRuns.HasValue)
                 {
                     var current = Interlocked.Increment(ref _runCount);
@@ -73,6 +74,8 @@ namespace OrcaPod.Service
                         try { Stop(); } catch { }
                     }
                 }
+
+                // Implement the rest of the periodic work here.
             }
             catch (Exception)
             {
@@ -81,14 +84,5 @@ namespace OrcaPod.Service
         }
 
         public void Dispose() => Stop();
-    }
-
-    // Platform hosts (Windows service wrapper, systemd wrapper, etc.)
-    // should implement this interface in a separate file/assembly.
-    public interface IPlatformServiceHost
-    {
-        // Called to run the provided MainService as a hosted service.
-        // The platform-specific host is responsible for calling Start/Stop at the right times.
-        void RunHosted(MainService service);
     }
 }
