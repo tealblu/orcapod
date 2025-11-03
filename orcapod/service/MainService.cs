@@ -4,6 +4,8 @@ using System.Threading;
 using Timer = System.Threading.Timer;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
+using OrcaPod.Utils;
 
 namespace OrcaPod.Service
 {
@@ -18,17 +20,25 @@ namespace OrcaPod.Service
         private int _runCount;
         private int? _maxRuns;
 
+        internal List<string> pathsToWatch = new List<string>();
+        private bool watchersInitialized = false;
+
+        internal Watchdog wd = null!;
+
         public string ServiceName { get; } = "OrcapodMainService";
 
         public MainService(ILogger<MainService> logger)
         {
             _logger = logger;
+
             // Allow a quick test mode via environment variable ORCAPOD_TEST=1
             if (Environment.GetEnvironmentVariable("ORCAPOD_TEST") == "1")
             {
                 _interval = TimeSpan.FromSeconds(1);
                 _maxRuns = 5; // stop after a few iterations in test mode
             }
+            
+            ReadSettingsFromConfig();
         }
 
         // Start the internal work loop
@@ -71,10 +81,11 @@ namespace OrcaPod.Service
                 // Put periodic work here.
                 // Keep this method cross-platform and lightweight.
 
+                var current = Interlocked.Increment(ref _runCount);
+
                 // Check for max runs in test mode
                 if (_maxRuns.HasValue)
                 {
-                    var current = Interlocked.Increment(ref _runCount);
                     if (current >= _maxRuns.Value)
                     {
                         // Stop after configured runs in test mode
@@ -83,8 +94,31 @@ namespace OrcaPod.Service
                     }
                 }
 
+                if (_cts?.IsCancellationRequested == true)
+                {
+                    _logger.LogInformation("Cancellation requested, stopping MainService.");
+                    try { Stop(); } catch { }
+                }
+
                 // Implement the rest of the periodic work here.
                 PrintStatusReport();
+                if (pathsToWatch.Count > 0 && !watchersInitialized)
+                {
+                    wd = new Watchdog(_logger);
+                    wd.FileChanged += (s, e) =>
+                    {
+                        _logger.LogInformation($"File changed: {e}");
+                    };
+
+                    foreach (var path in pathsToWatch)
+                    {
+                        wd.AddFile(path);
+                        _logger.LogInformation($"Watching path: {path}");
+                    }
+
+                    wd.Start();
+                    watchersInitialized = true;
+                }
             }
             catch (Exception ex)
             {
@@ -97,6 +131,34 @@ namespace OrcaPod.Service
         private void PrintStatusReport()
         {
             _logger.LogInformation($"Status report: ServiceName={ServiceName}, RunCount={_runCount}");
+        }
+
+        private void ReadSettingsFromConfig()
+        {
+            _logger.LogInformation("Reading settings from configuration file.");
+
+            // Load settings from INI file
+            var config = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddIniFile("settings.ini", optional: true, reloadOnChange: true)
+                .Build();
+
+            // Use settings if present
+            if (TimeSpan.TryParse(config["General:Interval"], out var interval))
+            {
+                _interval = interval;
+            }
+            if (int.TryParse(config["General:MaxRuns"], out var maxRuns))
+            {
+                _maxRuns = maxRuns;
+            }
+            var filesValue = config["General:FilesToWatch"];
+            if (!string.IsNullOrWhiteSpace(filesValue))
+            {
+                var files = filesValue.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                pathsToWatch.AddRange(files);
+                _logger.LogInformation($"Added paths: {string.Join(", ", files)}");
+            }
         }
     }
 }

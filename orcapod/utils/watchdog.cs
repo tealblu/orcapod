@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using Microsoft.Extensions.Logging;
 
 namespace OrcaPod.Utils
 {
@@ -45,7 +46,12 @@ namespace OrcaPod.Utils
 
         public bool IsRunning => _running;
 
-        public Watchdog() { }
+        private readonly Microsoft.Extensions.Logging.ILogger<Service.MainService> _logger;
+
+        public Watchdog(Microsoft.Extensions.Logging.ILogger<Service.MainService> logger)
+        {
+            _logger = logger;
+        }
 
         // Start watching (turn on all existing watchers)
         public void Start()
@@ -81,7 +87,7 @@ namespace OrcaPod.Utils
             var dir = Path.GetDirectoryName(fullPath) ?? throw new ArgumentException("Invalid file path");
             var fileName = Path.GetFileName(fullPath);
 
-            Console.WriteLine($"Watchdog: Adding file to watch: {fullPath}");
+            _logger.LogInformation($"Watchdog: Adding file to watch: {fullPath}");
 
             var fileSet = _directoryFiles.GetOrAdd(dir, _ => new ConcurrentDictionary<string, byte>(StringComparer.OrdinalIgnoreCase));
             fileSet.TryAdd(fileName, 0);
@@ -284,7 +290,7 @@ namespace OrcaPod.Utils
             AddFile("../README.md");
             FileChanged += (s, e) =>
             {
-                Console.WriteLine($"File changed: {e.FilePath}");
+                _logger.LogInformation($"File changed: {e.FilePath}");
             };
 
             Start();
@@ -294,11 +300,11 @@ namespace OrcaPod.Utils
             Console.CancelKeyPress += (s, e) =>
             {
                 e.Cancel = true; // prevent immediate process termination
-                Console.WriteLine("Stopping...");
+                _logger.LogInformation("Stopping...");
                 stop.Set();
             };
 
-            Console.WriteLine("Watching files. Press Ctrl+C to exit.");
+            _logger.LogInformation("Watching files. Press Ctrl+C to exit.");
             stop.Wait();
         }
     }
