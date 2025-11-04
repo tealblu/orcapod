@@ -604,6 +604,18 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
+      "NStack.Core/0.17.0": {
+        "type": "package",
+        "dependencies": {
+          "System.ValueTuple": "4.5.0"
+        },
+        "compile": {
+          "lib/netstandard2.0/NStack.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard2.0/NStack.dll": {}
+        }
+      },
       "NuGet.Versioning/6.14.0": {
         "type": "package",
         "compile": {
@@ -723,6 +735,42 @@
         },
         "build": {
           "buildTransitive/net6.0/System.Text.Json.targets": {}
+        }
+      },
+      "System.ValueTuple/4.5.0": {
+        "type": "package",
+        "compile": {
+          "ref/netcoreapp2.0/_._": {}
+        },
+        "runtime": {
+          "lib/netcoreapp2.0/_._": {}
+        }
+      },
+      "Terminal.Gui/1.6.0": {
+        "type": "package",
+        "dependencies": {
+          "NStack.Core": "0.17.0"
+        },
+        "compile": {
+          "lib/net6.0/Terminal.Gui.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/Terminal.Gui.dll": {
+            "related": ".xml"
+          }
+        },
+        "resource": {
+          "lib/net6.0/fr-FR/Terminal.Gui.resources.dll": {
+            "locale": "fr-FR"
+          },
+          "lib/net6.0/ja-JP/Terminal.Gui.resources.dll": {
+            "locale": "ja-JP"
+          },
+          "lib/net6.0/pt-PT/Terminal.Gui.resources.dll": {
+            "locale": "pt-PT"
+          }
         }
       },
       "Velopack/0.0.1298": {
@@ -1648,6 +1696,18 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "NStack.Core/0.17.0": {
+      "sha512": "DHjfak+Fp7hR8+hMvFu0sIkI4Um91e0VUIDlVHXOpvSgHwDCFhaL0UoKHdxR3ntrGkc/pEu7XzI/MdUT+QMC6Q==",
+      "type": "package",
+      "path": "nstack.core/0.17.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard2.0/NStack.dll",
+        "nstack.core.0.17.0.nupkg.sha512",
+        "nstack.core.nuspec"
+      ]
+    },
     "NuGet.Versioning/6.14.0": {
       "sha512": "4v4blkhCv8mpKtfx+z0G/X0daVCzdIaHSC51GkUspugi5JIMn2Bo8xm5PdZYF0U68gOBfz/+aPWMnpRd85Jbow==",
       "type": "package",
@@ -1868,6 +1928,76 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "System.ValueTuple/4.5.0": {
+      "sha512": "okurQJO6NRE/apDIP23ajJ0hpiNmJ+f0BwOlB/cSqTLQlw5upkf+5+96+iG2Jw40G1fCVCyPz/FhIABUjMR+RQ==",
+      "type": "package",
+      "path": "system.valuetuple/4.5.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "THIRD-PARTY-NOTICES.TXT",
+        "lib/MonoAndroid10/_._",
+        "lib/MonoTouch10/_._",
+        "lib/net461/System.ValueTuple.dll",
+        "lib/net461/System.ValueTuple.xml",
+        "lib/net47/System.ValueTuple.dll",
+        "lib/net47/System.ValueTuple.xml",
+        "lib/netcoreapp2.0/_._",
+        "lib/netstandard1.0/System.ValueTuple.dll",
+        "lib/netstandard1.0/System.ValueTuple.xml",
+        "lib/netstandard2.0/_._",
+        "lib/portable-net40+sl4+win8+wp8/System.ValueTuple.dll",
+        "lib/portable-net40+sl4+win8+wp8/System.ValueTuple.xml",
+        "lib/uap10.0.16299/_._",
+        "lib/xamarinios10/_._",
+        "lib/xamarinmac20/_._",
+        "lib/xamarintvos10/_._",
+        "lib/xamarinwatchos10/_._",
+        "ref/MonoAndroid10/_._",
+        "ref/MonoTouch10/_._",
+        "ref/net461/System.ValueTuple.dll",
+        "ref/net47/System.ValueTuple.dll",
+        "ref/netcoreapp2.0/_._",
+        "ref/netstandard2.0/_._",
+        "ref/portable-net40+sl4+win8+wp8/System.ValueTuple.dll",
+        "ref/uap10.0.16299/_._",
+        "ref/xamarinios10/_._",
+        "ref/xamarinmac20/_._",
+        "ref/xamarintvos10/_._",
+        "ref/xamarinwatchos10/_._",
+        "system.valuetuple.4.5.0.nupkg.sha512",
+        "system.valuetuple.nuspec",
+        "useSharedDesignerContext.txt",
+        "version.txt"
+      ]
+    },
+    "Terminal.Gui/1.6.0": {
+      "sha512": "YlsigHlYq6yJJRZhrSjtJQpgLvZDi6OXj4q3FLBPwMpntai+vZzvLhVRVfbfdISd+ba8Jur13l4eWV6RxQuYgg==",
+      "type": "package",
+      "path": "terminal.gui/1.6.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net472/Terminal.Gui.dll",
+        "lib/net472/Terminal.Gui.xml",
+        "lib/net472/fr-FR/Terminal.Gui.resources.dll",
+        "lib/net472/ja-JP/Terminal.Gui.resources.dll",
+        "lib/net472/pt-PT/Terminal.Gui.resources.dll",
+        "lib/net6.0/Terminal.Gui.dll",
+        "lib/net6.0/Terminal.Gui.xml",
+        "lib/net6.0/fr-FR/Terminal.Gui.resources.dll",
+        "lib/net6.0/ja-JP/Terminal.Gui.resources.dll",
+        "lib/net6.0/pt-PT/Terminal.Gui.resources.dll",
+        "lib/netstandard2.0/Terminal.Gui.dll",
+        "lib/netstandard2.0/Terminal.Gui.xml",
+        "lib/netstandard2.0/fr-FR/Terminal.Gui.resources.dll",
+        "lib/netstandard2.0/ja-JP/Terminal.Gui.resources.dll",
+        "lib/netstandard2.0/pt-PT/Terminal.Gui.resources.dll",
+        "terminal.gui.1.6.0.nupkg.sha512",
+        "terminal.gui.nuspec"
+      ]
+    },
     "Velopack/0.0.1298": {
       "sha512": "PJ6Nm28qJ4ChsHYzgHUJ8g+DGyyHes2+bwxY709+znMhgi8fMp8M1FTF8x6pZMjnsPCWVwoMlxVEyq0NLeRZtA==",
       "type": "package",
@@ -1899,6 +2029,7 @@
       "Microsoft.Extensions.Hosting >= 8.0.0",
       "Microsoft.Extensions.Logging.Console >= 8.0.0",
       "System.ServiceProcess.ServiceController >= 9.0.10",
+      "Terminal.Gui >= 1.6.0",
       "Velopack >= 0.0.1298"
     ]
   },
@@ -1964,6 +2095,10 @@
           "System.ServiceProcess.ServiceController": {
             "target": "Package",
             "version": "[9.0.10, )"
+          },
+          "Terminal.Gui": {
+            "target": "Package",
+            "version": "[1.6.0, )"
           },
           "Velopack": {
             "target": "Package",

@@ -64,6 +64,10 @@
               "target": "Package",
               "version": "[9.0.10, )"
             },
+            "Terminal.Gui": {
+              "target": "Package",
+              "version": "[1.6.0, )"
+            },
             "Velopack": {
               "target": "Package",
               "version": "[0.0.1298, )"

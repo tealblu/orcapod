@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System;
 using System.Threading.Tasks;
 using Velopack;
+using Terminal.Gui;
 
 namespace OrcaPod
 {
@@ -60,6 +61,7 @@ namespace OrcaPod
 
             if (shouldRunHost)
             {
+                logger.LogInformation("Menu closed. Starting OrcaPod service...");
                 await RunHostAsync(host, logger);
             }
         }
@@ -120,86 +122,109 @@ namespace OrcaPod
 
     private static bool ShowMenu(ILogger logger, ILogger<OrcaPod.Service.MainService> mainServiceLogger)
         {
-            var shouldRunHost = false;
-            var menuOptions = new[]
-            {
-                new MenuOption {
-                    Key = "1",
-                    Description = "Run in interactive console mode",
-                    Action = () => {
-                        Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
-                        logger.LogInformation("Console mode enabled.");
-                        shouldRunHost = true;
-                    },
-                    ExitAfter = true
+    var shouldRunHost = false;
+        var menuOptions = new[]
+        {
+            new MenuOption {
+                Key = "1",
+                Description = "Run in interactive console mode",
+                Action = () => {
+                    Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
+                    logger.LogInformation("Console mode enabled.");
+                    shouldRunHost = true;
+                    Terminal.Gui.Application.RequestStop();
                 },
-                new MenuOption {
-                    Key = "2",
-                    Description = "Install per-user autostart",
-                    Action = () => HandleInstall(logger)
+                ExitAfter = false // Already handled in action
+            },
+            new MenuOption {
+                Key = "2",
+                Description = "Install per-user autostart",
+                Action = () => HandleInstall(logger)
+            },
+            new MenuOption {
+                Key = "3",
+                Description = "Remove per-user autostart",
+                Action = () => HandleUninstall(logger)
+            },
+            new MenuOption {
+                Key = "4",
+                Description = "Run in test mode",
+                Action = () => {
+                    Environment.SetEnvironmentVariable("ORCAPOD_TEST", "1");
+                    Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
+                    logger.LogInformation("Test mode enabled.");
+                    shouldRunHost = true;
                 },
-                new MenuOption {
-                    Key = "3",
-                    Description = "Remove per-user autostart",
-                    Action = () => HandleUninstall(logger)
-                },
-                new MenuOption {
-                    Key = "4",
-                    Description = "Run in test mode",
-                    Action = () => {
-                        Environment.SetEnvironmentVariable("ORCAPOD_TEST", "1");
-                        Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
-                        logger.LogInformation("Test mode enabled.");
-                        shouldRunHost = true;
-                    },
-                    ExitAfter = true
-                },
-                new MenuOption {
-                    Key = "5",
-                    Description = "Create backup of config(s)",
-                    Action = () => {
-                        ConfigBackupHandler.BackupConfigs();
-                    }
-                },
-                new MenuOption {
-                    Key = "6",
-                    Description = "Show help",
-                    Action = () => PrintHelp(logger)
-                },
-                new MenuOption {
-                    Key = "0",
-                    Description = "Exit",
-                    Action = () => {
-                        logger.LogInformation("Exiting.");
-                        Environment.Exit(0);
-                    },
-                    ExitAfter = true
+                ExitAfter = true
+            },
+            new MenuOption {
+                Key = "5",
+                Description = "Create backup of config(s)",
+                Action = () => {
+                    ConfigBackupHandler.BackupConfigs();
                 }
-            };
+            },
+            new MenuOption {
+                Key = "6",
+                Description = "Show help",
+                Action = () => PrintHelp(logger)
+            },
+            new MenuOption {
+                Key = "0",
+                Description = "Exit",
+                Action = () => {
+                    logger.LogInformation("Exiting.");
+                    // No Environment.Exit here; just stop the UI and return.
+                },
+                ExitAfter = true
+            }
+        };
 
-            while (true)
-            {
-                Console.WriteLine("\nOrcaPod Menu:");
-                foreach (var option in menuOptions)
-                {
-                    Console.WriteLine($"      {option.Key}. {option.Description}");
-                }
-                Console.Write("Select an option: ");
+        Terminal.Gui.Application.Init();
+        var top = Terminal.Gui.Application.Top;
+        var win = new Terminal.Gui.Window("OrcaPod Menu")
+        {
+            X = 0,
+            Y = 1,
+            Width = Terminal.Gui.Dim.Fill(),
+            Height = Terminal.Gui.Dim.Fill()
+        };
+        top.Add(win);
 
-                var input = Console.ReadLine();
-                var selected = Array.Find(menuOptions, o => o.Key == input);
-                if (selected != null)
+        var menuItems = new string[menuOptions.Length];
+        for (int i = 0; i < menuOptions.Length; i++)
+        {
+            menuItems[i] = $"{menuOptions[i].Key}. {menuOptions[i].Description}";
+        }
+
+        var menuList = new Terminal.Gui.ListView()
+        {
+            X = 1,
+            Y = 1,
+            Width = Terminal.Gui.Dim.Fill() - 2,
+            Height = menuOptions.Length + 2
+        };
+        menuList.SetSource(menuItems);
+        win.Add(menuList);
+
+
+        menuList.OpenSelectedItem += (args) =>
+        {
+            var idx = menuList.SelectedItem;
+            if (idx >= 0 && idx < menuOptions.Length)
+            {
+                var selected = menuOptions[idx];
+                selected.Action();
+                // Always close the menu for options with ExitAfter = true
+                if (selected.ExitAfter)
                 {
-                    selected.Action();
-                    if (selected.ExitAfter)
-                        break;
-                }
-                else
-                {
-                    Console.WriteLine("Invalid option. Please try again.");
+                    Terminal.Gui.Application.RequestStop();
                 }
             }
-            return shouldRunHost;
+        };
+
+        Terminal.Gui.Application.Run();
+        return shouldRunHost;
         }
 
         private static void PrintHelp(ILogger logger)

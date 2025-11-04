@@ -21,6 +21,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="9.0.10" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.10" />
     <PackageReference Include="Velopack" Version="0.0.1298" />
+    <PackageReference Include="Terminal.Gui" Version="1.6.0" />
   </ItemGroup>
 
   <ItemGroup>
