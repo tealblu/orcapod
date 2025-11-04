@@ -2,6 +2,7 @@ using Microsoft.Extensions.Hosting;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Orcapod.Utils;
 namespace OrcaPod.Service
 {
     // Wrap the cross-platform MainService in a BackgroundService so it participates in the Generic Host lifecycle

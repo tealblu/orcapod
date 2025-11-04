@@ -1,6 +1,7 @@
 // ...existing code...
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Orcapod.Utils;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace OrcaPod.Service
     public class TrayIconService : IHostedService, IDisposable
     {
         private readonly IHostApplicationLifetime _lifetime;
-        private readonly ILogger<TrayIconService> _logger;
+    // Remove injected logger, use LogHandler
 #if WINDOWS
         private NotifyIcon? _notifyIcon;
 #elif LINUX
@@ -26,14 +27,14 @@ namespace OrcaPod.Service
         public TrayIconService(IHostApplicationLifetime lifetime, ILogger<TrayIconService> logger)
         {
             _lifetime = lifetime;
-            _logger = logger;
+            LogHandler.Initialize("orcapod.log");
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             try
             {
-                _logger.LogInformation("Starting TrayIconService");
+                LogHandler.LogInfo("Starting TrayIconService");
 #if WINDOWS
                 var menu = new ContextMenuStrip();
                 var exitItem = new ToolStripMenuItem("Exit");
@@ -59,14 +60,14 @@ namespace OrcaPod.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Failed to start tray icon");
+                LogHandler.LogError($"Failed to start tray icon: {ex}");
                 return Task.CompletedTask;
             }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Stopping TrayIconService");
+            LogHandler.LogInfo("Stopping TrayIconService");
             Dispose();
             return Task.CompletedTask;
         }

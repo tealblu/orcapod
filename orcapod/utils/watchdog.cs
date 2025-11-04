@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using Microsoft.Extensions.Logging;
+using Orcapod.Utils;
 
 namespace OrcaPod.Utils
 {
@@ -46,11 +47,11 @@ namespace OrcaPod.Utils
 
         public bool IsRunning => _running;
 
-        private readonly Microsoft.Extensions.Logging.ILogger<Service.MainService> _logger;
+    // Remove injected logger, use LogHandler
 
         public Watchdog(Microsoft.Extensions.Logging.ILogger<Service.MainService> logger)
         {
-            _logger = logger;
+            // No logger needed
         }
 
         // Start watching (turn on all existing watchers)
@@ -87,7 +88,7 @@ namespace OrcaPod.Utils
             var dir = Path.GetDirectoryName(fullPath) ?? throw new ArgumentException("Invalid file path");
             var fileName = Path.GetFileName(fullPath);
 
-            _logger.LogInformation($"Watchdog: Adding file to watch: {fullPath}");
+            LogHandler.LogInfo($"Watchdog: Adding file to watch: {fullPath}");
 
             var fileSet = _directoryFiles.GetOrAdd(dir, _ => new ConcurrentDictionary<string, byte>(StringComparer.OrdinalIgnoreCase));
             fileSet.TryAdd(fileName, 0);
@@ -131,8 +132,6 @@ namespace OrcaPod.Utils
             if (_directoryFiles.TryGetValue(dir, out var fileSet))
             {
                 fileSet.TryRemove(fileName, out _);
-
-                // if no files left in directory, remove and dispose watcher
                 if (fileSet.IsEmpty)
                 {
                     _directoryFiles.TryRemove(dir, out _);
@@ -290,21 +289,17 @@ namespace OrcaPod.Utils
             AddFile("../README.md");
             FileChanged += (s, e) =>
             {
-                _logger.LogInformation($"File changed: {e.FilePath}");
+                LogHandler.LogInfo($"File changed: {e.FilePath}");
             };
-
             Start();
-
-            // block until user hits Ctrl+C
             var stop = new ManualResetEventSlim(false);
             Console.CancelKeyPress += (s, e) =>
             {
-                e.Cancel = true; // prevent immediate process termination
-                _logger.LogInformation("Stopping...");
+                e.Cancel = true;
+                LogHandler.LogInfo("Stopping...");
                 stop.Set();
             };
-
-            _logger.LogInformation("Watching files. Press Ctrl+C to exit.");
+            LogHandler.LogInfo("Watching files. Press Ctrl+C to exit.");
             stop.Wait();
         }
     }

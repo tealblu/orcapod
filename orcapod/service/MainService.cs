@@ -6,13 +6,14 @@ using Timer = System.Threading.Timer;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using OrcaPod.Utils;
+using Orcapod.Utils;
 
 namespace OrcaPod.Service
 {
     // Cross-platform core service (no Windows-only APIs)
     public class MainService : IDisposable
     {
-        private readonly ILogger<MainService> _logger;
+        // Remove injected logger, use LogHandler
         private Timer? _timer;
         private TimeSpan _interval = TimeSpan.FromSeconds(30);
         private int _running;
@@ -26,30 +27,22 @@ namespace OrcaPod.Service
 
         public string ServiceName { get; } = "OrcapodMainService";
 
-        public MainService(ILogger<MainService> logger)
+        public MainService()
         {
-            _logger = logger;
-
+            LogHandler.Initialize("orcapod.log");
             ReadSettingsFromConfig();
-
-            ConfigBackupHandler.Initialize(_logger);
-            
-            // Check for and sync configs updated since last run
+            ConfigBackupHandler.Initialize(null!); // Remove logger dependency
             ConfigBackupHandler.SyncConfigs();
-
-            wd = new Utils.Watchdog(_logger);
-
+            wd = new Utils.Watchdog(null!); // Remove logger dependency
             wd.FileChanged += (s, e) =>
             {
                 ConfigBackupHandler.SyncConfigs();
-                _logger.LogInformation($"File changed: {e}");
+                LogHandler.LogInfo($"File changed: {e}");
             };
-
-            // Allow a quick test mode via environment variable ORCAPOD_TEST=1
             if (Environment.GetEnvironmentVariable("ORCAPOD_TEST") == "1")
             {
                 _interval = TimeSpan.FromSeconds(1);
-                _maxRuns = 5; // stop after a few iterations in test mode
+                _maxRuns = 5;
             }
         }
 
@@ -59,7 +52,7 @@ namespace OrcaPod.Service
             if (Interlocked.Exchange(ref _running, 1) == 1)
                 return;
 
-            _logger.LogInformation("MainService starting");
+            LogHandler.LogInfo("MainService starting");
             _cts = new CancellationTokenSource();
             _timer = new Timer(DoWork, null, TimeSpan.Zero, _interval);
         }
@@ -70,7 +63,7 @@ namespace OrcaPod.Service
             if (Interlocked.Exchange(ref _running, 0) == 0)
                 return;
 
-            _logger.LogInformation("MainService stopping");
+            LogHandler.LogInfo("MainService stopping");
             try
             {
                 _cts?.Cancel();
@@ -94,38 +87,27 @@ namespace OrcaPod.Service
                 // Put periodic work here.
                 // Keep this method cross-platform and lightweight.
                 PrintStatusReport();
-
                 var current = Interlocked.Increment(ref _runCount);
-
-                // Check for max runs in test mode
                 if (_maxRuns.HasValue)
                 {
                     if (current >= _maxRuns.Value)
                     {
-                        // Stop after configured runs in test mode
-                        _logger.LogInformation($"Max runs reached ({_maxRuns.Value}), stopping MainService.");
+                        LogHandler.LogInfo($"Max runs reached ({_maxRuns.Value}), stopping MainService.");
                         try { Stop(); } catch { }
                     }
                 }
-
-                // Check for cancellation
                 if (_cts?.IsCancellationRequested == true)
                 {
-                    _logger.LogInformation("Cancellation requested, stopping MainService.");
+                    LogHandler.LogInfo("Cancellation requested, stopping MainService.");
                     try { Stop(); } catch { }
                 }
-
-                // Add any paths that need to be watched
                 if (pathsToWatch.Count > 0)
                 {
                     wd.Stop();
-
                     while (pathsToWatch.Count > 0)
                     {
                         var path = pathsToWatch[0];
                         pathsToWatch.RemoveAt(0);
-
-                        // If path is a directory, add all files inside (recursively)
                         if (System.IO.Directory.Exists(path))
                         {
                             var files = System.IO.Directory.GetFiles(path, "*", System.IO.SearchOption.AllDirectories);
@@ -140,21 +122,19 @@ namespace OrcaPod.Service
                         }
                         else
                         {
-                            _logger.LogWarning($"Path '{path}' does not exist as a file or directory, skipping.");
+                            LogHandler.LogWarning($"Path '{path}' does not exist as a file or directory, skipping.");
                         }
                     }
                 }
-
-                // Start the watchdog if not running
                 if (!wd.IsRunning)
                 {
                     wd.Start();
-                    _logger.LogInformation("Watchdog started.");
+                    LogHandler.LogInfo("Watchdog started.");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Exception in MainService.DoWork");
+                LogHandler.LogError($"Exception in MainService.DoWork: {ex}");
             }
         }
 
@@ -162,12 +142,12 @@ namespace OrcaPod.Service
 
         private void PrintStatusReport()
         {
-            _logger.LogInformation($"Status report: ServiceName={ServiceName}, RunCount={_runCount}");
+            LogHandler.LogInfo($"Status report: ServiceName={ServiceName}, RunCount={_runCount}");
         }
 
         private void ReadSettingsFromConfig()
         {
-            _logger.LogInformation("Reading settings from configuration file.");
+            LogHandler.LogInfo("Reading settings from configuration file.");
 
             // Use SettingsHandler for configuration access
             if (TimeSpan.TryParse(SettingsHandler.Get("General:Interval"), out var interval))
@@ -198,12 +178,12 @@ namespace OrcaPod.Service
                 if (mappingKeys.Count > 0)
                 {
                     pathsToWatch.AddRange(mappingKeys);
-                    _logger.LogInformation($"Added paths from Mappings keys: {string.Join(", ", mappingKeys)}");
+                    LogHandler.LogInfo($"Added paths from Mappings keys: {string.Join(", ", mappingKeys)}");
                 }
                 if (mappingValues.Count > 0)
                 {
                     pathsToWatch.AddRange(mappingValues);
-                    _logger.LogInformation($"Added paths from Mappings values: {string.Join(", ", mappingValues)}");
+                    LogHandler.LogInfo($"Added paths from Mappings values: {string.Join(", ", mappingValues)}");
                 }
             }
         }
