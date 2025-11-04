@@ -18,7 +18,7 @@ jobs:
         id: get-version
         shell: bash
         run: |
-          VERSION=$(grep -oE '<Version>[^<]+' orcapod/orcapod.csproj | sed 's/<Version>//')
+          VERSION=$(grep -oE '<Version>[^<]+' orcapod/orcapod.csproj | sed 's/<Version>//' | head -n 1)
           COMMIT_DATE_UTC=$(date -u +%Y%m%d%H%M%S)
           # Only use base version for Velopack
           echo "version=$VERSION" >> $GITHUB_OUTPUT
