@@ -18,6 +18,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.10" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="9.0.10" />
     <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.10" />
+    <PackageReference Include="Velopack" Version="0.0.1298" />
   </ItemGroup>
 
   <!-- Enable Windows Forms so we can show a NotifyIcon in per-user tray mode on Windows -->

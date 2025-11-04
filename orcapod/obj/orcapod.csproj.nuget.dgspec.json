@@ -63,6 +63,10 @@
             "System.ServiceProcess.ServiceController": {
               "target": "Package",
               "version": "[9.0.10, )"
+            },
+            "Velopack": {
+              "target": "Package",
+              "version": "[0.0.1298, )"
             }
           },
           "imports": [

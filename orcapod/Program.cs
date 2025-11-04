@@ -7,6 +7,7 @@ using System.Threading;
 using System.Runtime.InteropServices;
 using System;
 using System.Threading.Tasks;
+using Velopack;
 
 namespace OrcaPod
 {
@@ -14,6 +15,8 @@ namespace OrcaPod
     {
         public static async Task Main(string[] args)
         {
+            VelopackApp.Build().Run();
+
             IHost host = CreateHostBuilder(args).Build();
             ILogger<Program> logger = host.Services.GetRequiredService<ILogger<Program>>();
             ILogger<OrcaPod.Service.MainService> mainServiceLogger = host.Services.GetRequiredService<ILogger<OrcaPod.Service.MainService>>();
