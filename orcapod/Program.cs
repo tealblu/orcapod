@@ -19,6 +19,7 @@ namespace OrcaPod
 
             IHost host = CreateHostBuilder(args).Build();
             LogHandler.Initialize("orcapod.log");
+            InstallHandler.Initialize();
             bool shouldRunHost = false;
 
             if (args != null && args.Length > 0)
@@ -133,12 +134,12 @@ namespace OrcaPod
                 },
                 new MenuOption {
                     Key = "2",
-                    Description = "Install per-user autostart",
+                    Description = "Install autostart for configured programs",
                     Action = () => HandleInstall()
                 },
                 new MenuOption {
                     Key = "3",
-                    Description = "Remove per-user autostart",
+                    Description = "Remove autostart for configured programs",
                     Action = () => HandleUninstall()
                 },
                 new MenuOption {
