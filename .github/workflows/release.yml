@@ -20,13 +20,9 @@ jobs:
         run: |
           VERSION=$(grep -oE '<Version>[^<]+' orcapod/orcapod.csproj | sed 's/<Version>//')
           COMMIT_DATE_UTC=$(date -u +%Y%m%d%H%M%S)
-          VERSION_WITH_HASH="$VERSION-$COMMIT_DATE_UTC"
-          # Validate: must match 1.2.3 or 1.2.3-abcdef1
-          if ! echo "$VERSION_WITH_HASH" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z\-\.]+)?$'; then
-            echo "::error::Invalid version string: $VERSION_WITH_HASH"
-            exit 1
-          fi
-          echo "version=$VERSION_WITH_HASH" >> $GITHUB_OUTPUT
+          # Only use base version for Velopack
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "timestamp=$COMMIT_DATE_UTC" >> $GITHUB_OUTPUT
 
       - name: Install .NET
         uses: actions/setup-dotnet@v4
@@ -39,6 +35,6 @@ jobs:
       - name: Create Velopack Release
         run: |
           dotnet tool install -g vpk
-          vpk download github --repoUrl https://github.com/${{ github.repository }} --token ${{ secrets.GITHUB_TOKEN }}
-          vpk pack -u orcapod -v "${{ steps.get-version.outputs.version }}" --packDir publish
-          vpk upload github --repoUrl https://github.com/${{ github.repository }} --publish --releaseName "orcapod ${{ steps.get-version.outputs.version }}" --tag v${{ steps.get-version.outputs.version }} --token ${{ secrets.GITHUB_TOKEN }}
+          vpk download github --repoUrl https://github.com/${{ github.repository }} --token ${{ secrets.GITHUB_TOKEN }} -y
+          vpk pack -u orcapod -v "${{ steps.get-version.outputs.version }}" --packDir publish -y
+          vpk upload github --repoUrl https://github.com/${{ github.repository }} --publish --releaseName "orcapod ${{ steps.get-version.outputs.version }}" --tag v${{ steps.get-version.outputs.version }}-${{ steps.get-version.outputs.timestamp }} --token ${{ secrets.GITHUB_TOKEN }} -y
