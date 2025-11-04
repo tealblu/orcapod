@@ -17,7 +17,17 @@ jobs:
       - name: Get Version from Project File
         id: get-version
         shell: bash
-        run: echo "version=$(grep -oE '<Version>[^<]+' orcapod/orcapod.csproj | sed 's/<Version>//')" >> $GITHUB_OUTPUT
+        run: |
+          VERSION=$(grep -oE '<Version>[^<]+' orcapod/orcapod.csproj | sed 's/<Version>//')
+          # Ensure version is valid SemVer (e.g., 1.2.3)
+          if [[ ! $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid version string: $VERSION"
+            exit 1
+          fi
+          # Get short commit hash
+          SHORT_HASH=$(git rev-parse --short HEAD)
+          VERSION_WITH_HASH="$VERSION-$SHORT_HASH"
+          echo "version=$VERSION_WITH_HASH" >> $GITHUB_OUTPUT
 
       - name: Install .NET
         uses: actions/setup-dotnet@v4
@@ -31,5 +41,5 @@ jobs:
         run: |
           dotnet tool install -g vpk
           vpk download github --repoUrl https://github.com/${{ github.repository }} --token ${{ secrets.GITHUB_TOKEN }}
-          vpk pack -u orcapod -v ${{ steps.get-version.outputs.version }} -p publish
+          vpk pack -u orcapod -v ${{ steps.get-version.outputs.version }} --packDir publish
           vpk upload github --repoUrl https://github.com/${{ github.repository }} --publish --releaseName "orcapod ${{ steps.get-version.outputs.version }}" --tag v${{ steps.get-version.outputs.version }} --token ${{ secrets.GITHUB_TOKEN }}

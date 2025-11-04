@@ -3,6 +3,7 @@
   <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
     <OutputType>Exe</OutputType>
     <TargetFramework>net9.0-windows</TargetFramework>
+    <version>0.0.0</version>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
