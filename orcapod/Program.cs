@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using OrcaPod.Service;
 using OrcaPod.Utils;
 using System.Threading;
@@ -8,6 +7,7 @@ using System.Runtime.InteropServices;
 using System;
 using System.Threading.Tasks;
 using Velopack;
+using Orcapod.Utils;
 
 namespace OrcaPod
 {
@@ -18,8 +18,8 @@ namespace OrcaPod
             VelopackApp.Build().Run();
 
             IHost host = CreateHostBuilder(args).Build();
-            ILogger<Program> logger = host.Services.GetRequiredService<ILogger<Program>>();
-            ILogger<OrcaPod.Service.MainService> mainServiceLogger = host.Services.GetRequiredService<ILogger<OrcaPod.Service.MainService>>();
+            LogHandler.Initialize("orcapod.log");
+            InstallHandler.Initialize();
             bool shouldRunHost = false;
 
             if (args != null && args.Length > 0)
@@ -34,39 +34,39 @@ namespace OrcaPod
                         break;
                     case "--install":
                     case "install":
-                        HandleInstall(logger);
+                        HandleInstall();
                         return;
                     case "--uninstall":
                     case "uninstall":
-                        HandleUninstall(logger);
+                        HandleUninstall();
                         return;
                     case "--test":
                     case "test":
                         Environment.SetEnvironmentVariable("ORCAPOD_TEST", "1");
                         Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
-                        logger.LogInformation("Test mode enabled.");
+                        LogHandler.LogInfo("Test mode enabled.");
                         shouldRunHost = true;
                         break;
                     case "--help":
                     case "help":
-                        PrintHelp(logger);
+                        PrintHelp();
                         return;
                 }
             }
             else
             {
-                shouldRunHost = ShowMenu(logger, mainServiceLogger);
+                shouldRunHost = ShowMenu();
             }
 
             if (shouldRunHost)
             {
-                await RunHostAsync(host, logger);
+                await RunHostAsync(host);
             }
         }
 
-        private static async Task RunHostAsync(IHost host, ILogger logger)
+        private static async Task RunHostAsync(IHost host)
         {
-            logger.LogInformation("Starting OrcaPod host...");
+            LogHandler.LogInfo("Starting OrcaPod host...");
             await host.RunAsync();
         }
 
@@ -81,32 +81,31 @@ namespace OrcaPod
                     {
                         services.AddHostedService<TrayIconService>();
                     }
-                })
-                .ConfigureLogging((ctx, lb) => lb.AddConsole());
+                });
 
-        private static void HandleInstall(ILogger logger)
+        private static void HandleInstall()
         {
             try
             {
-                logger.LogInformation("Autostart install flagged for current user.");
-                // TODO: Add actual install logic here
+                LogHandler.LogInfo("Autostart install flagged for current user.");
+                InstallHandler.HandleInstall();
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Install failed: {Message}", ex.Message);
+                LogHandler.LogError($"Install failed: {ex.Message}");
             }
         }
 
-        private static void HandleUninstall(ILogger logger)
+        private static void HandleUninstall()
         {
             try
             {
-                logger.LogInformation("Autostart removal flagged for current user.");
-                // TODO: Add actual uninstall logic here
+                LogHandler.LogInfo("Autostart removal flagged for current user.");
+                InstallHandler.HandleUninstall();
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Uninstall failed: {Message}", ex.Message);
+                LogHandler.LogError($"Uninstall failed: {ex.Message}");
             }
         }
 
@@ -118,7 +117,7 @@ namespace OrcaPod
             public bool ExitAfter { get; set; } = false;
         }
 
-    private static bool ShowMenu(ILogger logger, ILogger<OrcaPod.Service.MainService> mainServiceLogger)
+    private static bool ShowMenu()
         {
             var shouldRunHost = false;
             var menuOptions = new[]
@@ -128,20 +127,20 @@ namespace OrcaPod
                     Description = "Run in interactive console mode",
                     Action = () => {
                         Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
-                        logger.LogInformation("Console mode enabled.");
+                        LogHandler.LogInfo("Console mode enabled.");
                         shouldRunHost = true;
                     },
                     ExitAfter = true
                 },
                 new MenuOption {
                     Key = "2",
-                    Description = "Install per-user autostart",
-                    Action = () => HandleInstall(logger)
+                    Description = "Install autostart for configured programs",
+                    Action = () => HandleInstall()
                 },
                 new MenuOption {
                     Key = "3",
-                    Description = "Remove per-user autostart",
-                    Action = () => HandleUninstall(logger)
+                    Description = "Remove autostart for configured programs",
+                    Action = () => HandleUninstall()
                 },
                 new MenuOption {
                     Key = "4",
@@ -149,7 +148,7 @@ namespace OrcaPod
                     Action = () => {
                         Environment.SetEnvironmentVariable("ORCAPOD_TEST", "1");
                         Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
-                        logger.LogInformation("Test mode enabled.");
+                        LogHandler.LogInfo("Test mode enabled.");
                         shouldRunHost = true;
                     },
                     ExitAfter = true
@@ -164,13 +163,13 @@ namespace OrcaPod
                 new MenuOption {
                     Key = "6",
                     Description = "Show help",
-                    Action = () => PrintHelp(logger)
+                    Action = () => PrintHelp()
                 },
                 new MenuOption {
                     Key = "0",
                     Description = "Exit",
                     Action = () => {
-                        logger.LogInformation("Exiting.");
+                        LogHandler.LogInfo("Exiting.");
                         Environment.Exit(0);
                     },
                     ExitAfter = true
@@ -202,14 +201,14 @@ namespace OrcaPod
             return shouldRunHost;
         }
 
-        private static void PrintHelp(ILogger logger)
+        private static void PrintHelp()
         {
-            logger.LogInformation("OrcaPod CLI Usage:");
-            logger.LogInformation("  --console      Run in interactive console mode");
-            logger.LogInformation("  --install      Install per-user autostart");
-            logger.LogInformation("  --uninstall    Remove per-user autostart");
-            logger.LogInformation("  --test         Run in test mode (sets ORCAPOD_TEST=1)");
-            logger.LogInformation("  --help         Show this help message");
+            LogHandler.LogInfo("OrcaPod CLI Usage:");
+            LogHandler.LogInfo("  --console      Run in interactive console mode");
+            LogHandler.LogInfo("  --install      Install per-user autostart");
+            LogHandler.LogInfo("  --uninstall    Remove per-user autostart");
+            LogHandler.LogInfo("  --test         Run in test mode (sets ORCAPOD_TEST=1)");
+            LogHandler.LogInfo("  --help         Show this help message");
         }
     }
 }

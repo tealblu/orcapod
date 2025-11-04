@@ -64,6 +64,10 @@
               "target": "Package",
               "version": "[9.0.10, )"
             },
+            "TaskScheduler": {
+              "target": "Package",
+              "version": "[2.12.2, )"
+            },
             "Velopack": {
               "target": "Package",
               "version": "[0.0.1298, )"

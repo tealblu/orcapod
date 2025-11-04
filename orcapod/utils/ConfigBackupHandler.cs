@@ -2,25 +2,23 @@ using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Orcapod.Utils;
 
 namespace OrcaPod.Utils
 {
     public static class ConfigBackupHandler
     {
-        private static Microsoft.Extensions.Logging.ILogger<OrcaPod.Service.MainService>? _logger;
+    // Remove injected logger, use LogHandler
         private static Dictionary<string, string> _mappings = new Dictionary<string, string>();
 
         public static void Initialize(Microsoft.Extensions.Logging.ILogger<OrcaPod.Service.MainService> logger)
         {
-            _logger = logger;
             _mappings = LoadMappings();
         }
 
         public static Dictionary<string, string> LoadMappings()
         {
-            if (_logger == null)
-                throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
-            _logger.LogInformation("Loading backup mappings");
+            LogHandler.LogInfo("Loading backup mappings");
             var section = SettingsHandler.GetSection("Mappings");
             Dictionary<string, string> mappings = new Dictionary<string, string>();
             if (section != null)
@@ -39,19 +37,18 @@ namespace OrcaPod.Utils
             }
             else
             {
-                _logger.LogWarning("Mappings section not found in configuration.");
+                LogHandler.LogWarning("Mappings section not found in configuration.");
             }
             foreach (var kvp in mappings)
             {
-                _logger.LogInformation($"Mapping loaded: {kvp.Key} -> {kvp.Value}");
+                LogHandler.LogInfo($"Mapping loaded: {kvp.Key} -> {kvp.Value}");
             }
             return mappings;
         }
 
         public static void BackupConfigs()
         {
-            if (_logger == null)
-                throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
+            // No logger needed
             foreach (var mapping in _mappings)
             {
                 BackupConfig(mapping.Key);
@@ -60,8 +57,7 @@ namespace OrcaPod.Utils
 
         public static void BackupConfig(string sourcePath)
         {
-            if (_logger == null)
-                throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
+            // No logger needed
             if (_mappings.TryGetValue(sourcePath, out var destinationPath))
             {
                 try
@@ -72,22 +68,22 @@ namespace OrcaPod.Utils
                     {
                         // Copy all files and subdirectories recursively
                         CopyDirectory(sourcePath, destinationPath, overwrite: true);
-                        _logger.LogInformation($"Backed up directory '{sourcePath}' to '{destinationPath}'");
+                        LogHandler.LogInfo($"Backed up directory '{sourcePath}' to '{destinationPath}'");
                     }
                     else
                     {
                         File.Copy(sourcePath, destinationPath, overwrite: true);
-                        _logger.LogInformation($"Backed up file '{sourcePath}' to '{destinationPath}'");
+                        LogHandler.LogInfo($"Backed up file '{sourcePath}' to '{destinationPath}'");
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Failed to back up '{sourcePath}' to '{destinationPath}': {ex.Message}");
+                    LogHandler.LogError($"Failed to back up '{sourcePath}' to '{destinationPath}': {ex.Message}");
                 }
             }
             else
             {
-                _logger.LogWarning($"No backup mapping found for '{sourcePath}'");
+                LogHandler.LogWarning($"No backup mapping found for '{sourcePath}'");
             }
         }
 
@@ -108,8 +104,7 @@ namespace OrcaPod.Utils
 
         public static bool CheckIfNewerBackupExists(string sourcePath)
         {
-            if (_logger == null)
-                throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
+            // No logger needed
             if (_mappings.TryGetValue(sourcePath, out var destinationPath))
             {
                 bool sourceIsDir = Directory.Exists(sourcePath);
@@ -144,8 +139,7 @@ namespace OrcaPod.Utils
 
         public static void RestoreConfig(string sourcePath)
         {
-            if (_logger == null)
-                throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
+            // No logger needed
             if (_mappings.TryGetValue(sourcePath, out var destinationPath))
             {
                 try
@@ -156,22 +150,22 @@ namespace OrcaPod.Utils
                     {
                         // Restore all files and subdirectories recursively
                         RestoreDirectory(destinationPath, sourcePath, overwrite: true);
-                        _logger.LogInformation($"Restored directory '{sourcePath}' from '{destinationPath}'");
+                        LogHandler.LogInfo($"Restored directory '{sourcePath}' from '{destinationPath}'");
                     }
                     else
                     {
                         File.Copy(destinationPath, sourcePath, overwrite: true);
-                        _logger.LogInformation($"Restored file '{sourcePath}' from '{destinationPath}'");
+                        LogHandler.LogInfo($"Restored file '{sourcePath}' from '{destinationPath}'");
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Failed to restore '{sourcePath}' from '{destinationPath}': {ex.Message}");
+                    LogHandler.LogError($"Failed to restore '{sourcePath}' from '{destinationPath}': {ex.Message}");
                 }
             }
             else
             {
-                _logger.LogWarning($"No backup mapping found for '{sourcePath}'");
+                LogHandler.LogWarning($"No backup mapping found for '{sourcePath}'");
             }
         }
 
@@ -193,19 +187,18 @@ namespace OrcaPod.Utils
 
         public static void SyncConfigs()
         {
-            if (_logger == null)
-                throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
-            _logger.LogInformation("Syncing configurations with backups");
+            // No logger needed
+            LogHandler.LogInfo("Syncing configurations with backups");
             foreach (var mapping in _mappings)
             {
                 var sourcePath = mapping.Key;
                 if (CheckIfNewerBackupExists(sourcePath))
                 {
-                    _logger.LogInformation($"Newer backup found for '{sourcePath}', restoring.");
+                    LogHandler.LogInfo($"Newer backup found for '{sourcePath}', restoring.");
                     RestoreConfig(sourcePath);
                 }
                 else {
-                    _logger.LogInformation($"No newer backup found for '{sourcePath}', backing up.");
+                    LogHandler.LogInfo($"No newer backup found for '{sourcePath}', backing up.");
                     BackupConfig(sourcePath);
                 }
             }
@@ -214,7 +207,6 @@ namespace OrcaPod.Utils
         public static void Dispose()
         {
             // Cleanup if necessary
-            _logger = null;
             _mappings.Clear();
         }
     }
