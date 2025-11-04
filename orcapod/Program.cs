@@ -15,74 +15,47 @@ namespace OrcaPod
     {
         public static async Task Main(string[] args)
         {
-            // The logger will be injected by the DI container, so don't construct MainService manually.
-
-            // Support simple CLI helpers:
-            // --console : force interactive console behavior
-            // --install : install per-user autostart
-            // --uninstall : remove per-user autostart
-            // --test : run a short test mode (sets ORCAPOD_TEST=1)
             if (args != null && args.Length > 0)
             {
-                if (args.Contains("--console", StringComparer.OrdinalIgnoreCase))
+                var command = args[0].ToLowerInvariant();
+                switch (command)
                 {
-                    Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
-                }
-
-                if (args.Contains("--install", StringComparer.OrdinalIgnoreCase))
-                {
-                    try
-                    {
-                        Console.WriteLine("Autostart install flagged for current user.");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Install failed: " + ex.Message);
+                    case "--console":
+                    case "console":
+                        Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
+                        break;
+                    case "--install":
+                    case "install":
+                        HandleInstall();
                         return;
-                    }
-                    return;
-                }
-
-                if (args.Contains("--uninstall", StringComparer.OrdinalIgnoreCase))
-                {
-                    try
-                    {
-                        Console.WriteLine("Autostart removal flagged for current user.");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Uninstall failed: " + ex.Message);
+                    case "--uninstall":
+                    case "uninstall":
+                        HandleUninstall();
                         return;
-                    }
-                    return;
-                }
-
-                if (args.Contains("--test", StringComparer.OrdinalIgnoreCase))
-                {
-                    Environment.SetEnvironmentVariable("ORCAPOD_TEST", "1");
-                    // Also run in console mode so output is visible
-                    Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
-
-                    Console.WriteLine("Test mode enabled.");
+                    case "--test":
+                    case "test":
+                        Environment.SetEnvironmentVariable("ORCAPOD_TEST", "1");
+                        Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
+                        Console.WriteLine("Test mode enabled.");
+                        break;
+                    case "--help":
+                    case "help":
+                        PrintHelp();
+                        return;
                 }
             }
+            else
+            {
+                ShowMenu();
+            }
 
-            // No platform-specific daemon/service handling — always run the Generic Host.
-            // Tray icon support will be registered for interactive sessions on Windows and Linux.
-
-            // Otherwise, build a Generic Host. This covers interactive console runs, and the
-            // per-user system tray scenario on Windows (registered as a hosted service below).
+            // Build and run the Generic Host as before
             var hostBuilder = Host.CreateDefaultBuilder(args)
                 .ConfigureServices((ctx, services) =>
                 {
-                    // Core cross-platform service and utilities
                     services.AddSingleton<MainService>();
                     services.AddSingleton<Watchdog>();
-
-                    // Host the MainService via a BackgroundService so it integrates with the Generic Host lifecycle
                     services.AddHostedService<HostedMainService>();
-
-                    // On Windows and Linux interactive sessions, add the system tray hosted service
                     if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                     {
                         services.AddHostedService<TrayIconService>();
@@ -91,11 +64,88 @@ namespace OrcaPod
                 .ConfigureLogging((ctx, lb) => lb.AddConsole());
 
             var host = hostBuilder.Build();
-
-            // Run the host which starts hosted services and blocks until shutdown.
             await host.RunAsync();
+        }
 
-            // Host ran and exited. All shutdown work is handled by hosted services.
+        private static void HandleInstall()
+        {
+            try
+            {
+                Console.WriteLine("Autostart install flagged for current user.");
+                // TODO: Add actual install logic here
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Install failed: " + ex.Message);
+            }
+        }
+
+        private static void HandleUninstall()
+        {
+            try
+            {
+                Console.WriteLine("Autostart removal flagged for current user.");
+                // TODO: Add actual uninstall logic here
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Uninstall failed: " + ex.Message);
+            }
+        }
+
+        private static void ShowMenu()
+        {
+            while (true)
+            {
+                Console.WriteLine("\nOrcaPod Menu:");
+                Console.WriteLine("1. Run in interactive console mode");
+                Console.WriteLine("2. Install per-user autostart");
+                Console.WriteLine("3. Remove per-user autostart");
+                Console.WriteLine("4. Run in test mode");
+                Console.WriteLine("5. Show help");
+                Console.WriteLine("0. Exit");
+                Console.Write("Select an option: ");
+
+                var input = Console.ReadLine();
+                switch (input)
+                {
+                    case "1":
+                        Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
+                        Console.WriteLine("Console mode enabled.");
+                        return;
+                    case "2":
+                        HandleInstall();
+                        break;
+                    case "3":
+                        HandleUninstall();
+                        break;
+                    case "4":
+                        Environment.SetEnvironmentVariable("ORCAPOD_TEST", "1");
+                        Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
+                        Console.WriteLine("Test mode enabled.");
+                        return;
+                    case "5":
+                        PrintHelp();
+                        break;
+                    case "0":
+                        Console.WriteLine("Exiting.");
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        Console.WriteLine("Invalid option. Please try again.");
+                        break;
+                }
+            }
+        }
+
+        private static void PrintHelp()
+        {
+            Console.WriteLine("OrcaPod CLI Usage:");
+            Console.WriteLine("  --console      Run in interactive console mode");
+            Console.WriteLine("  --install      Install per-user autostart");
+            Console.WriteLine("  --uninstall    Remove per-user autostart");
+            Console.WriteLine("  --test         Run in test mode (sets ORCAPOD_TEST=1)");
+            Console.WriteLine("  --help         Show this help message");
         }
     }
 }
