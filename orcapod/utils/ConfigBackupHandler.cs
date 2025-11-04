@@ -66,8 +66,19 @@ namespace OrcaPod.Utils
             {
                 try
                 {
-                    File.Copy(sourcePath, destinationPath, overwrite: true);
-                    _logger.LogInformation($"Backed up '{sourcePath}' to '{destinationPath}'");
+                    bool sourceIsDir = Directory.Exists(sourcePath);
+                    bool destIsDir = Directory.Exists(destinationPath) || (sourceIsDir && !File.Exists(destinationPath));
+                    if (sourceIsDir && destIsDir)
+                    {
+                        // Copy all files and subdirectories recursively
+                        CopyDirectory(sourcePath, destinationPath, overwrite: true);
+                        _logger.LogInformation($"Backed up directory '{sourcePath}' to '{destinationPath}'");
+                    }
+                    else
+                    {
+                        File.Copy(sourcePath, destinationPath, overwrite: true);
+                        _logger.LogInformation($"Backed up file '{sourcePath}' to '{destinationPath}'");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -80,13 +91,48 @@ namespace OrcaPod.Utils
             }
         }
 
+        private static void CopyDirectory(string sourceDir, string destDir, bool overwrite)
+        {
+            Directory.CreateDirectory(destDir);
+            foreach (var file in Directory.GetFiles(sourceDir))
+            {
+                var destFile = Path.Combine(destDir, Path.GetFileName(file));
+                File.Copy(file, destFile, overwrite);
+            }
+            foreach (var dir in Directory.GetDirectories(sourceDir))
+            {
+                var destSubDir = Path.Combine(destDir, Path.GetFileName(dir));
+                CopyDirectory(dir, destSubDir, overwrite);
+            }
+    }
+
         public static bool CheckIfNewerBackupExists(string sourcePath)
         {
             if (_logger == null)
                 throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
             if (_mappings.TryGetValue(sourcePath, out var destinationPath))
             {
-                if (File.Exists(destinationPath))
+                bool sourceIsDir = Directory.Exists(sourcePath);
+                bool destIsDir = Directory.Exists(destinationPath);
+                if (sourceIsDir && destIsDir)
+                {
+                    // Recursively check if any file in destination is newer than its counterpart in source
+                    var sourceFiles = Directory.GetFiles(sourcePath, "*", SearchOption.AllDirectories);
+                    foreach (var srcFile in sourceFiles)
+                    {
+                        var relativePath = Path.GetRelativePath(sourcePath, srcFile);
+                        var destFile = Path.Combine(destinationPath, relativePath);
+                        if (File.Exists(destFile))
+                        {
+                            var srcInfo = new FileInfo(srcFile);
+                            var destInfo = new FileInfo(destFile);
+                            if (destInfo.LastWriteTime > srcInfo.LastWriteTime)
+                                return true;
+                        }
+                    }
+                    return false;
+                }
+                else if (File.Exists(destinationPath))
                 {
                     var sourceInfo = new FileInfo(sourcePath);
                     var destInfo = new FileInfo(destinationPath);
@@ -104,8 +150,19 @@ namespace OrcaPod.Utils
             {
                 try
                 {
-                    File.Copy(destinationPath, sourcePath, overwrite: true);
-                    _logger.LogInformation($"Restored '{sourcePath}' from '{destinationPath}'");
+                    bool sourceIsDir = Directory.Exists(sourcePath);
+                    bool destIsDir = Directory.Exists(destinationPath);
+                    if (sourceIsDir && destIsDir)
+                    {
+                        // Restore all files and subdirectories recursively
+                        RestoreDirectory(destinationPath, sourcePath, overwrite: true);
+                        _logger.LogInformation($"Restored directory '{sourcePath}' from '{destinationPath}'");
+                    }
+                    else
+                    {
+                        File.Copy(destinationPath, sourcePath, overwrite: true);
+                        _logger.LogInformation($"Restored file '{sourcePath}' from '{destinationPath}'");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -118,11 +175,27 @@ namespace OrcaPod.Utils
             }
         }
 
-        public static void LoadUpdatedConfigs()
+            // Helper method to restore directories recursively
+            private static void RestoreDirectory(string sourceDir, string destDir, bool overwrite)
+        {
+            Directory.CreateDirectory(destDir);
+            foreach (var file in Directory.GetFiles(sourceDir))
+            {
+                var destFile = Path.Combine(destDir, Path.GetFileName(file));
+                File.Copy(file, destFile, overwrite);
+            }
+            foreach (var dir in Directory.GetDirectories(sourceDir))
+            {
+                var destSubDir = Path.Combine(destDir, Path.GetFileName(dir));
+                RestoreDirectory(dir, destSubDir, overwrite);
+            }
+    }
+
+        public static void SyncConfigs()
         {
             if (_logger == null)
                 throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
-            _logger.LogInformation("Checking for updated configuration files to restore.");
+            _logger.LogInformation("Syncing configurations with backups");
             foreach (var mapping in _mappings)
             {
                 var sourcePath = mapping.Key;
@@ -130,6 +203,10 @@ namespace OrcaPod.Utils
                 {
                     _logger.LogInformation($"Newer backup found for '{sourcePath}', restoring.");
                     RestoreConfig(sourcePath);
+                }
+                else {
+                    _logger.LogInformation($"No newer backup found for '{sourcePath}', backing up.");
+                    BackupConfig(sourcePath);
                 }
             }
         }
