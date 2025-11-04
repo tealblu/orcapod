@@ -45,3 +45,7 @@ Contributions are welcome! Please submit issues or pull requests.
 ## License
 
 See [LICENSE](./LICENSE) for details.
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=tealblu/orcapod&type=date&legend=top-left)](https://www.star-history.com/#tealblu/orcapod&type=date&legend=top-left)
