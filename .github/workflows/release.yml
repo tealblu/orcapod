@@ -27,7 +27,7 @@ jobs:
             echo "::error::Invalid version string: $VERSION_WITH_HASH"
             exit 1
           fi
-          echo "version=$VERSION_WITH_HASH" >> $GITHUB_OUTPUT
+          echo version=$VERSION_WITH_HASH >> $GITHUB_OUTPUT
 
       - name: Install .NET
         uses: actions/setup-dotnet@v4
