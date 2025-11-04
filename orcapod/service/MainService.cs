@@ -14,7 +14,7 @@ namespace OrcaPod.Service
     {
         private readonly ILogger<MainService> _logger;
         private Timer? _timer;
-        private TimeSpan _interval = TimeSpan.FromSeconds(5);
+        private TimeSpan _interval = TimeSpan.FromSeconds(30);
         private int _running;
         private CancellationTokenSource? _cts;
         private int _runCount;
@@ -29,11 +29,19 @@ namespace OrcaPod.Service
         public MainService(ILogger<MainService> logger)
         {
             _logger = logger;
+
+            ReadSettingsFromConfig();
+
+            ConfigBackupHandler.Initialize(_logger);
+            
+            // Check for and sync configs updated since last run
+            ConfigBackupHandler.SyncConfigs();
+
             wd = new Utils.Watchdog(_logger);
 
             wd.FileChanged += (s, e) =>
             {
-                ConfigBackupHandler.BackupConfigs();
+                ConfigBackupHandler.SyncConfigs();
                 _logger.LogInformation($"File changed: {e}");
             };
 
@@ -43,10 +51,6 @@ namespace OrcaPod.Service
                 _interval = TimeSpan.FromSeconds(1);
                 _maxRuns = 5; // stop after a few iterations in test mode
             }
-
-            ConfigBackupHandler.Initialize(_logger);
-            
-            ReadSettingsFromConfig();
         }
 
         // Start the internal work loop
@@ -120,12 +124,26 @@ namespace OrcaPod.Service
                     {
                         var path = pathsToWatch[0];
                         pathsToWatch.RemoveAt(0);
-                        wd.AddFile(path);
+
+                        // If path is a directory, add all files inside (recursively)
+                        if (System.IO.Directory.Exists(path))
+                        {
+                            var files = System.IO.Directory.GetFiles(path, "*", System.IO.SearchOption.AllDirectories);
+                            foreach (var file in files)
+                            {
+                                wd.AddFile(file);
+                            }
+                        }
+                        else if (System.IO.File.Exists(path))
+                        {
+                            wd.AddFile(path);
+                        }
+                        else
+                        {
+                            _logger.LogWarning($"Path '{path}' does not exist as a file or directory, skipping.");
+                        }
                     }
                 }
-
-                // Check for and load configs updated since last check
-                ConfigBackupHandler.LoadUpdatedConfigs();
 
                 // Start the watchdog if not running
                 if (!wd.IsRunning)
@@ -165,6 +183,7 @@ namespace OrcaPod.Service
             if (mappingsSection != null)
             {
                 var mappingKeys = new List<string>();
+                var mappingValues = new List<string>();
                 foreach (var kvp in mappingsSection.AsEnumerable())
                 {
                     // Skip the parent section itself
@@ -173,12 +192,18 @@ namespace OrcaPod.Service
                         // Remove the "Mappings:" prefix to get the original key
                         var key = kvp.Key.StartsWith("Mappings:") ? kvp.Key.Substring("Mappings:".Length) : kvp.Key;
                         mappingKeys.Add(key);
+                        mappingValues.Add(kvp.Value);
                     }
                 }
                 if (mappingKeys.Count > 0)
                 {
                     pathsToWatch.AddRange(mappingKeys);
                     _logger.LogInformation($"Added paths from Mappings keys: {string.Join(", ", mappingKeys)}");
+                }
+                if (mappingValues.Count > 0)
+                {
+                    pathsToWatch.AddRange(mappingValues);
+                    _logger.LogInformation($"Added paths from Mappings values: {string.Join(", ", mappingValues)}");
                 }
             }
         }
