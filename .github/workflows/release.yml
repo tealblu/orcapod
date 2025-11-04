@@ -1,6 +1,5 @@
-
-name: Release
-permissions: 
+name: Deploy to GitHub Releases
+permissions:
   contents: write
 
 on:
@@ -9,42 +8,28 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  deploy-to-github-releases:
+    runs-on: windows-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: Setup .NET
+      - name: Get Version from Project File
+        id: get-version
+        shell: bash
+        run: echo "version=$(grep -oE '<Version>[^<]+' orcapod/orcapod.csproj | sed 's/<Version>//')" >> $GITHUB_OUTPUT
+
+      - name: Install .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: 9.0.x
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - name: Publish Application
+        run: dotnet publish orcapod/orcapod.csproj -c Release -o publish -r win-x64 --self-contained true
 
-      - name: Build
-        run: dotnet build --configuration Release
-
-      - name: Publish
-        run: dotnet publish --configuration Release --output ./publish
-
-      - name: Get commit hash
-        id: get_hash
-        run: echo "commit_hash=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
-
-      - name: Create tag
-        run: git tag release-${{ env.commit_hash }}
-
-      - name: Push tag
-        run: git push origin release-${{ env.commit_hash }}
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: release-${{ env.commit_hash }}
-          files: ./publish/**/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Velopack Release
+        run: |
+          dotnet tool install -g vpk
+          vpk download github --repoUrl https://github.com/${{ github.repository }} --token ${{ secrets.GITHUB_TOKEN }}
+          vpk pack -u orcapod -v ${{ steps.get-version.outputs.version }} -p publish
+          vpk upload github --repoUrl https://github.com/${{ github.repository }} --publish --releaseName "orcapod ${{ steps.get-version.outputs.version }}" --tag v${{ steps.get-version.outputs.version }} --token ${{ secrets.GITHUB_TOKEN }}
