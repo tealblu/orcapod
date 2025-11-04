@@ -13,7 +13,7 @@ namespace OrcaPod.Service
     {
         private readonly ILogger<MainService> _logger;
         private Timer? _timer;
-        private TimeSpan _interval = TimeSpan.FromSeconds(10);
+        private TimeSpan _interval = TimeSpan.FromSeconds(5);
         private int _running;
         private CancellationTokenSource? _cts;
         private int _runCount;
