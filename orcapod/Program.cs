@@ -14,14 +14,10 @@ namespace OrcaPod
     {
         public static async Task Main(string[] args)
         {
-            IHost host = null;
-            ILogger<Program> logger = null;
-            ILogger<OrcaPod.Service.MainService> mainServiceLogger = null;
+            IHost host = CreateHostBuilder(args).Build();
+            ILogger<Program> logger = host.Services.GetRequiredService<ILogger<Program>>();
+            ILogger<OrcaPod.Service.MainService> mainServiceLogger = host.Services.GetRequiredService<ILogger<OrcaPod.Service.MainService>>();
             bool shouldRunHost = false;
-
-            host = CreateHostBuilder(args).Build();
-            logger = host.Services.GetRequiredService<ILogger<Program>>();
-            mainServiceLogger = host.Services.GetRequiredService<ILogger<OrcaPod.Service.MainService>>();
 
             if (args != null && args.Length > 0)
             {

@@ -5,8 +5,6 @@ using Timer = System.Threading.Timer;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
-using OrcaPod.Utils;
-using OrcaPod.Utils;
 
 namespace OrcaPod.Service
 {
@@ -23,16 +21,16 @@ namespace OrcaPod.Service
 
         internal List<string> pathsToWatch = new List<string>();
 
-        internal Watchdog wd = null!;
-        internal ConfigBackupHandler cbh = null!;
+        internal Utils.Watchdog wd = null!;
+        internal Utils.ConfigBackupHandler cbh = null!;
 
         public string ServiceName { get; } = "OrcapodMainService";
 
         public MainService(ILogger<MainService> logger)
         {
             _logger = logger;
-            wd = new Watchdog(_logger);
-            cbh = new ConfigBackupHandler(_logger);
+            wd = new Utils.Watchdog(_logger);
+            cbh = new Utils.ConfigBackupHandler(_logger);
 
             wd.FileChanged += (s, e) =>
             {
