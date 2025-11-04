@@ -1,21 +1,27 @@
-#if WINDOWS
+// ...existing code...
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+#if WINDOWS
 using System.Windows.Forms;
-using Microsoft.Extensions.DependencyInjection;
+#elif LINUX
+using H.NotifyIcon.Core;
+#endif
 
 namespace OrcaPod.Service
 {
-    // A minimal per-user system tray hosted service for Windows.
-    // It creates a NotifyIcon and exposes a small context menu to stop the host.
+    // Cross-platform tray icon service for Windows and Linux (X11/Wayland)
     public class TrayIconService : IHostedService, IDisposable
     {
         private readonly IHostApplicationLifetime _lifetime;
         private readonly ILogger<TrayIconService> _logger;
+#if WINDOWS
         private NotifyIcon? _notifyIcon;
+#elif LINUX
+        private TaskbarIcon? _notifyIcon;
+#endif
 
         public TrayIconService(IHostApplicationLifetime lifetime, ILogger<TrayIconService> logger)
         {
@@ -28,13 +34,11 @@ namespace OrcaPod.Service
             try
             {
                 _logger.LogInformation("Starting TrayIconService");
-
-                // Create a simple context menu
+#if WINDOWS
                 var menu = new ContextMenuStrip();
                 var exitItem = new ToolStripMenuItem("Exit");
                 exitItem.Click += (s, e) => _lifetime.StopApplication();
                 menu.Items.Add(exitItem);
-
                 _notifyIcon = new NotifyIcon()
                 {
                     Icon = System.Drawing.SystemIcons.Application,
@@ -42,14 +46,15 @@ namespace OrcaPod.Service
                     Text = "OrcaPod (per-user)",
                     ContextMenuStrip = menu
                 };
-
-                // Optionally handle double-click to show a status, etc.
                 _notifyIcon.DoubleClick += (s, e) =>
                 {
-                    // Example: show balloon tip
                     _notifyIcon?.ShowBalloonTip(3000, "OrcaPod", "Running in background", ToolTipIcon.Info);
                 };
-
+#elif LINUX
+                _notifyIcon = new TaskbarIcon();
+                _notifyIcon.ToolTipText = "OrcaPod (per-user)";
+                // TODO: Set icon and menu for Linux tray
+#endif
                 return Task.CompletedTask;
             }
             catch (Exception ex)
@@ -70,15 +75,22 @@ namespace OrcaPod.Service
         {
             try
             {
+#if WINDOWS
                 if (_notifyIcon != null)
                 {
                     _notifyIcon.Visible = false;
                     _notifyIcon.Dispose();
                     _notifyIcon = null;
                 }
+#elif LINUX
+                if (_notifyIcon != null)
+                {
+                    _notifyIcon.Dispose();
+                    _notifyIcon = null;
+                }
+#endif
             }
             catch { }
         }
     }
 }
-#endif

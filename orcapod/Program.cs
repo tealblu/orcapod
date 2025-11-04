@@ -74,7 +74,7 @@ namespace OrcaPod
                     services.AddSingleton<MainService>();
                     services.AddSingleton<Watchdog>();
                     services.AddHostedService<HostedMainService>();
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
                         services.AddHostedService<TrayIconService>();
                     }
