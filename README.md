@@ -11,6 +11,14 @@ OrcaPod is a tool designed to backup and sync configuration files for Orca Slice
 - Support for additional app configs
 - Easy restore and migration
 
+## Roadmap
+- ~~Basic config syncing~~
+- ~~Autostart when OrcaSlicer starts~~
+- Autostart on Linux
+- UI for managing settings
+- Migrate from console UI to GUI
+- Cloud sync
+
 ## Getting Started
 
 1. Clone this repository:
