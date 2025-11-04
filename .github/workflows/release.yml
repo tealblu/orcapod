@@ -20,7 +20,7 @@ jobs:
         run: |
           VERSION=$(grep -oE '<Version>[^<]+' orcapod/orcapod.csproj | sed 's/<Version>//')
           SHORT_HASH=$(git rev-parse --short HEAD)
-          VERSION_WITH_HASH="$VERSION-$SHORT_HASH"
+          VERSION_WITH_HASH="$VERSION-build.$SHORT_HASH"
           # Validate: must match 1.2.3 or 1.2.3-abcdef1
           if ! echo "$VERSION_WITH_HASH" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z\-\.]+)?$'; then
             echo "::error::Invalid version string: $VERSION_WITH_HASH"
