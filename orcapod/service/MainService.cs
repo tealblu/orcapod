@@ -125,6 +125,9 @@ namespace OrcaPod.Service
                     }
                 }
 
+                // Check for and load configs updated since last check
+                cbh.LoadUpdatedConfigs();
+
                 // Start the watchdog if not running
                 if (!wd.IsRunning)
                 {
@@ -149,10 +152,10 @@ namespace OrcaPod.Service
         {
             _logger.LogInformation("Reading settings from configuration file.");
 
-            // Load settings from INI file
+            // Load settings from JSON file
             var config = new ConfigurationBuilder()
                 .SetBasePath(AppContext.BaseDirectory)
-                .AddIniFile("settings.ini", optional: true, reloadOnChange: true)
+                .AddJsonFile("settings.json", optional: true, reloadOnChange: true)
                 .Build();
 
             // Use settings if present

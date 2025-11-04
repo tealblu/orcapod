@@ -7,20 +7,20 @@ namespace Orcapod.Utils
     public static class SettingsHandler
     {
         private static IConfigurationRoot _configuration;
-        private static string iniFileName = "settings.ini";
-        private static string iniFilePath = Path.Combine(AppContext.BaseDirectory, iniFileName);
+        private static string jsonFileName = "settings.json";
+        private static string jsonFilePath = Path.Combine(AppContext.BaseDirectory, jsonFileName);
 
         static SettingsHandler()
         {
-            // If INI file does not exist, throw an exception
-            if (!File.Exists(iniFilePath))
+            // If JSON file does not exist, throw an exception
+            if (!File.Exists(jsonFilePath))
             {
-                throw new FileNotFoundException($"Configuration file '{iniFileName}' not found.");
+                throw new FileNotFoundException($"Configuration file '{jsonFileName}' not found.");
             }
 
             var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddIniFile(iniFilePath, optional: false, reloadOnChange: true);
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile(jsonFileName, optional: false, reloadOnChange: true);
 
             _configuration = builder.Build();
         }
