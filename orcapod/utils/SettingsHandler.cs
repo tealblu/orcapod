@@ -2,7 +2,7 @@ using System;
 using Microsoft.Extensions.Configuration;
 using System.IO;
 
-namespace Orcapod.Utils
+namespace OrcaPod.Utils
 {
     public static class SettingsHandler
     {

@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using OrcaPod.Service;
-using OrcaPod;
 using OrcaPod.Utils;
 using System.Threading;
 using System.Runtime.InteropServices;
@@ -15,6 +14,15 @@ namespace OrcaPod
     {
         public static async Task Main(string[] args)
         {
+            IHost host = null;
+            ILogger<Program> logger = null;
+            ILogger<OrcaPod.Service.MainService> mainServiceLogger = null;
+            bool shouldRunHost = false;
+
+            host = CreateHostBuilder(args).Build();
+            logger = host.Services.GetRequiredService<ILogger<Program>>();
+            mainServiceLogger = host.Services.GetRequiredService<ILogger<OrcaPod.Service.MainService>>();
+
             if (args != null && args.Length > 0)
             {
                 var command = args[0].ToLowerInvariant();
@@ -23,34 +31,48 @@ namespace OrcaPod
                     case "--console":
                     case "console":
                         Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
+                        shouldRunHost = true;
                         break;
                     case "--install":
                     case "install":
-                        HandleInstall();
+                        HandleInstall(logger);
                         return;
                     case "--uninstall":
                     case "uninstall":
-                        HandleUninstall();
+                        HandleUninstall(logger);
                         return;
                     case "--test":
                     case "test":
                         Environment.SetEnvironmentVariable("ORCAPOD_TEST", "1");
                         Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
-                        Console.WriteLine("Test mode enabled.");
+                        logger.LogInformation("Test mode enabled.");
+                        shouldRunHost = true;
                         break;
                     case "--help":
                     case "help":
-                        PrintHelp();
+                        PrintHelp(logger);
                         return;
                 }
             }
             else
             {
-                ShowMenu();
+                shouldRunHost = ShowMenu(logger, mainServiceLogger);
             }
 
-            // Build and run the Generic Host as before
-            var hostBuilder = Host.CreateDefaultBuilder(args)
+            if (shouldRunHost)
+            {
+                await RunHostAsync(host, logger);
+            }
+        }
+
+        private static async Task RunHostAsync(IHost host, ILogger logger)
+        {
+            logger.LogInformation("Starting OrcaPod host...");
+            await host.RunAsync();
+        }
+
+        private static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
                 .ConfigureServices((ctx, services) =>
                 {
                     services.AddSingleton<MainService>();
@@ -63,89 +85,133 @@ namespace OrcaPod
                 })
                 .ConfigureLogging((ctx, lb) => lb.AddConsole());
 
-            var host = hostBuilder.Build();
-            await host.RunAsync();
-        }
-
-        private static void HandleInstall()
+        private static void HandleInstall(ILogger logger)
         {
             try
             {
-                Console.WriteLine("Autostart install flagged for current user.");
+                logger.LogInformation("Autostart install flagged for current user.");
                 // TODO: Add actual install logic here
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Install failed: " + ex.Message);
+                logger.LogError(ex, "Install failed: {Message}", ex.Message);
             }
         }
 
-        private static void HandleUninstall()
+        private static void HandleUninstall(ILogger logger)
         {
             try
             {
-                Console.WriteLine("Autostart removal flagged for current user.");
+                logger.LogInformation("Autostart removal flagged for current user.");
                 // TODO: Add actual uninstall logic here
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Uninstall failed: " + ex.Message);
+                logger.LogError(ex, "Uninstall failed: {Message}", ex.Message);
             }
         }
 
-        private static void ShowMenu()
+        private class MenuOption
         {
+            public required string Key { get; set; }
+            public required string Description { get; set; }
+            public required Action Action { get; set; }
+            public bool ExitAfter { get; set; } = false;
+        }
+
+    private static bool ShowMenu(ILogger logger, ILogger<OrcaPod.Service.MainService> mainServiceLogger)
+        {
+            var shouldRunHost = false;
+            var menuOptions = new[]
+            {
+                new MenuOption {
+                    Key = "1",
+                    Description = "Run in interactive console mode",
+                    Action = () => {
+                        Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
+                        logger.LogInformation("Console mode enabled.");
+                        shouldRunHost = true;
+                    },
+                    ExitAfter = true
+                },
+                new MenuOption {
+                    Key = "2",
+                    Description = "Install per-user autostart",
+                    Action = () => HandleInstall(logger)
+                },
+                new MenuOption {
+                    Key = "3",
+                    Description = "Remove per-user autostart",
+                    Action = () => HandleUninstall(logger)
+                },
+                new MenuOption {
+                    Key = "4",
+                    Description = "Run in test mode",
+                    Action = () => {
+                        Environment.SetEnvironmentVariable("ORCAPOD_TEST", "1");
+                        Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
+                        logger.LogInformation("Test mode enabled.");
+                        shouldRunHost = true;
+                    },
+                    ExitAfter = true
+                },
+                new MenuOption {
+                    Key = "5",
+                    Description = "Create backup of config(s)",
+                    Action = () => {
+                        var backupHandler = new ConfigBackupHandler(mainServiceLogger);
+                        backupHandler.BackupConfigs();
+                    }
+                },
+                new MenuOption {
+                    Key = "6",
+                    Description = "Show help",
+                    Action = () => PrintHelp(logger)
+                },
+                new MenuOption {
+                    Key = "0",
+                    Description = "Exit",
+                    Action = () => {
+                        logger.LogInformation("Exiting.");
+                        Environment.Exit(0);
+                    },
+                    ExitAfter = true
+                }
+            };
+
             while (true)
             {
                 Console.WriteLine("\nOrcaPod Menu:");
-                Console.WriteLine("1. Run in interactive console mode");
-                Console.WriteLine("2. Install per-user autostart");
-                Console.WriteLine("3. Remove per-user autostart");
-                Console.WriteLine("4. Run in test mode");
-                Console.WriteLine("5. Show help");
-                Console.WriteLine("0. Exit");
+                foreach (var option in menuOptions)
+                {
+                    Console.WriteLine($"      {option.Key}. {option.Description}");
+                }
                 Console.Write("Select an option: ");
 
                 var input = Console.ReadLine();
-                switch (input)
+                var selected = Array.Find(menuOptions, o => o.Key == input);
+                if (selected != null)
                 {
-                    case "1":
-                        Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
-                        Console.WriteLine("Console mode enabled.");
-                        return;
-                    case "2":
-                        HandleInstall();
-                        break;
-                    case "3":
-                        HandleUninstall();
-                        break;
-                    case "4":
-                        Environment.SetEnvironmentVariable("ORCAPOD_TEST", "1");
-                        Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");
-                        Console.WriteLine("Test mode enabled.");
-                        return;
-                    case "5":
-                        PrintHelp();
-                        break;
-                    case "0":
-                        Console.WriteLine("Exiting.");
-                        Environment.Exit(0);
-                        break;
-                    default:
-                        Console.WriteLine("Invalid option. Please try again.");
+                    selected.Action();
+                    if (selected.ExitAfter)
                         break;
                 }
+                else
+                {
+                    Console.WriteLine("Invalid option. Please try again.");
+                }
             }
+            return shouldRunHost;
         }
 
-        private static void PrintHelp()
+        private static void PrintHelp(ILogger logger)
         {
-            Console.WriteLine("OrcaPod CLI Usage:");
-            Console.WriteLine("  --console      Run in interactive console mode");
-            Console.WriteLine("  --install      Install per-user autostart");
-            Console.WriteLine("  --uninstall    Remove per-user autostart");
-            Console.WriteLine("  --test         Run in test mode (sets ORCAPOD_TEST=1)");
-            Console.WriteLine("  --help         Show this help message");
+            logger.LogInformation("OrcaPod CLI Usage:");
+            logger.LogInformation("  --console      Run in interactive console mode");
+            logger.LogInformation("  --install      Install per-user autostart");
+            logger.LogInformation("  --uninstall    Remove per-user autostart");
+            logger.LogInformation("  --test         Run in test mode (sets ORCAPOD_TEST=1)");
+            logger.LogInformation("  --help         Show this help message");
         }
     }
 }

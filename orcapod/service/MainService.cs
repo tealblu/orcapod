@@ -6,7 +6,7 @@ using Timer = System.Threading.Timer;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
 using OrcaPod.Utils;
-using Orcapod.Utils;
+using OrcaPod.Utils;
 
 namespace OrcaPod.Service
 {

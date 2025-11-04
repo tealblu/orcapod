@@ -3,7 +3,7 @@ using System.IO;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
-namespace Orcapod.Utils
+namespace OrcaPod.Utils
 {
     public class ConfigBackupHandler
     {
@@ -44,6 +44,14 @@ namespace Orcapod.Utils
                 _logger.LogInformation($"Mapping loaded: {kvp.Key} -> {kvp.Value}");
             }
             return mappings;
+        }
+
+        public void BackupConfigs()
+        {
+            foreach (var mapping in _mappings)
+            {
+                BackupConfig(mapping.Key);
+            }
         }
 
         public void BackupConfig(string sourcePath)
