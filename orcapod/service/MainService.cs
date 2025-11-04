@@ -151,27 +151,35 @@ namespace OrcaPod.Service
         {
             _logger.LogInformation("Reading settings from configuration file.");
 
-            // Load settings from JSON file
-            var config = new ConfigurationBuilder()
-                .SetBasePath(AppContext.BaseDirectory)
-                .AddJsonFile("settings.json", optional: true, reloadOnChange: true)
-                .Build();
-
-            // Use settings if present
-            if (TimeSpan.TryParse(config["General:Interval"], out var interval))
+            // Use SettingsHandler for configuration access
+            if (TimeSpan.TryParse(SettingsHandler.Get("General:Interval"), out var interval))
             {
                 _interval = interval;
             }
-            if (int.TryParse(config["General:MaxRuns"], out var maxRuns))
+            if (int.TryParse(SettingsHandler.Get("General:MaxRuns"), out var maxRuns))
             {
                 _maxRuns = maxRuns;
             }
-            var filesValue = config["General:FilesToWatch"];
-            if (!string.IsNullOrWhiteSpace(filesValue))
+
+            var mappingsSection = SettingsHandler.GetSection("Mappings");
+            if (mappingsSection != null)
             {
-                var files = filesValue.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-                pathsToWatch.AddRange(files);
-                _logger.LogInformation($"Added paths: {string.Join(", ", files)}");
+                var mappingKeys = new List<string>();
+                foreach (var kvp in mappingsSection.AsEnumerable())
+                {
+                    // Skip the parent section itself
+                    if (kvp.Value != null && kvp.Key != "Mappings")
+                    {
+                        // Remove the "Mappings:" prefix to get the original key
+                        var key = kvp.Key.StartsWith("Mappings:") ? kvp.Key.Substring("Mappings:".Length) : kvp.Key;
+                        mappingKeys.Add(key);
+                    }
+                }
+                if (mappingKeys.Count > 0)
+                {
+                    pathsToWatch.AddRange(mappingKeys);
+                    _logger.LogInformation($"Added paths from Mappings keys: {string.Join(", ", mappingKeys)}");
+                }
             }
         }
     }

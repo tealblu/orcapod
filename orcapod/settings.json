@@ -1,8 +1,5 @@
 {
-  "General": {
-    "FilesToWatch": "C:\\Users\\ckhar\\Projects\\orcapod-proj\\README.md"
-  },
-  "Mappings": {
-    "C:\\Users\\ckhar\\Projects\\orcapod-proj\\README.md": "C:\\Users\\ckhar\\Projects\\orcapod-proj\\README_backup.md"
+    "Mappings": {
+        "C:\\Users\\ckhar\\Projects\\orcapod-proj\\README.md": "C:\\Users\\ckhar\\Projects\\orcapod-proj\\README_backup.md"
   }
 }
