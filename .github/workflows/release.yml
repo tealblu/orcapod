@@ -20,7 +20,7 @@ jobs:
         run: |
           VERSION=$(grep -oE '<Version>[^<]+' orcapod/orcapod.csproj | sed 's/<Version>//')
           # Ensure version is valid SemVer (e.g., 1.2.3)
-          if [[ ! $VERSION =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+          if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
             echo "::error::Invalid version string: $VERSION"
             exit 1
           fi
