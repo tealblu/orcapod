@@ -5,6 +5,7 @@ using Timer = System.Threading.Timer;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using OrcaPod.Utils;
 
 namespace OrcaPod.Service
 {
@@ -22,7 +23,6 @@ namespace OrcaPod.Service
         internal List<string> pathsToWatch = new List<string>();
 
         internal Utils.Watchdog wd = null!;
-        internal Utils.ConfigBackupHandler cbh = null!;
 
         public string ServiceName { get; } = "OrcapodMainService";
 
@@ -30,10 +30,10 @@ namespace OrcaPod.Service
         {
             _logger = logger;
             wd = new Utils.Watchdog(_logger);
-            cbh = new Utils.ConfigBackupHandler(_logger);
 
             wd.FileChanged += (s, e) =>
             {
+                ConfigBackupHandler.BackupConfigs();
                 _logger.LogInformation($"File changed: {e}");
             };
 
@@ -43,6 +43,8 @@ namespace OrcaPod.Service
                 _interval = TimeSpan.FromSeconds(1);
                 _maxRuns = 5; // stop after a few iterations in test mode
             }
+
+            ConfigBackupHandler.Initialize(_logger);
             
             ReadSettingsFromConfig();
         }
@@ -77,11 +79,10 @@ namespace OrcaPod.Service
                 _cts?.Dispose();
                 _cts = null;
                 wd.Stop();
-                cbh = null!;
             }
         }
 
-        // THIS IS WHERE THE WORK GETS DONE
+        // THIS IS WHERE THE WORK GETS DONE 💪
         private void DoWork(object? state)
         {
             try
@@ -124,7 +125,7 @@ namespace OrcaPod.Service
                 }
 
                 // Check for and load configs updated since last check
-                cbh.LoadUpdatedConfigs();
+                ConfigBackupHandler.LoadUpdatedConfigs();
 
                 // Start the watchdog if not running
                 if (!wd.IsRunning)

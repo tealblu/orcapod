@@ -155,8 +155,7 @@ namespace OrcaPod
                     Key = "5",
                     Description = "Create backup of config(s)",
                     Action = () => {
-                        var backupHandler = new ConfigBackupHandler(mainServiceLogger);
-                        backupHandler.BackupConfigs();
+                        ConfigBackupHandler.BackupConfigs();
                     }
                 },
                 new MenuOption {

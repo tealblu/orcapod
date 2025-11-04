@@ -5,19 +5,21 @@ using Microsoft.Extensions.Logging;
 
 namespace OrcaPod.Utils
 {
-    public class ConfigBackupHandler
+    public static class ConfigBackupHandler
     {
-        private readonly Microsoft.Extensions.Logging.ILogger<OrcaPod.Service.MainService> _logger;
-        private Dictionary<string, string> _mappings = new Dictionary<string, string>();
+        private static Microsoft.Extensions.Logging.ILogger<OrcaPod.Service.MainService>? _logger;
+        private static Dictionary<string, string> _mappings = new Dictionary<string, string>();
 
-        public ConfigBackupHandler(Microsoft.Extensions.Logging.ILogger<OrcaPod.Service.MainService> logger)
+        public static void Initialize(Microsoft.Extensions.Logging.ILogger<OrcaPod.Service.MainService> logger)
         {
             _logger = logger;
             _mappings = LoadMappings();
         }
 
-        public Dictionary<string, string> LoadMappings()
+        public static Dictionary<string, string> LoadMappings()
         {
+            if (_logger == null)
+                throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
             _logger.LogInformation("Loading backup mappings");
             var section = SettingsHandler.GetSection("Mappings");
             Dictionary<string, string> mappings = new Dictionary<string, string>();
@@ -46,16 +48,20 @@ namespace OrcaPod.Utils
             return mappings;
         }
 
-        public void BackupConfigs()
+        public static void BackupConfigs()
         {
+            if (_logger == null)
+                throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
             foreach (var mapping in _mappings)
             {
                 BackupConfig(mapping.Key);
             }
         }
 
-        public void BackupConfig(string sourcePath)
+        public static void BackupConfig(string sourcePath)
         {
+            if (_logger == null)
+                throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
             if (_mappings.TryGetValue(sourcePath, out var destinationPath))
             {
                 try
@@ -74,8 +80,10 @@ namespace OrcaPod.Utils
             }
         }
 
-        public bool CheckIfNewerBackupExists(string sourcePath)
+        public static bool CheckIfNewerBackupExists(string sourcePath)
         {
+            if (_logger == null)
+                throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
             if (_mappings.TryGetValue(sourcePath, out var destinationPath))
             {
                 if (File.Exists(destinationPath))
@@ -88,8 +96,10 @@ namespace OrcaPod.Utils
             return false;
         }
 
-        public void RestoreConfig(string sourcePath)
+        public static void RestoreConfig(string sourcePath)
         {
+            if (_logger == null)
+                throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
             if (_mappings.TryGetValue(sourcePath, out var destinationPath))
             {
                 try
@@ -108,8 +118,10 @@ namespace OrcaPod.Utils
             }
         }
 
-        public void LoadUpdatedConfigs()
+        public static void LoadUpdatedConfigs()
         {
+            if (_logger == null)
+                throw new InvalidOperationException("ConfigBackupHandler not initialized. Call Initialize() first.");
             _logger.LogInformation("Checking for updated configuration files to restore.");
             foreach (var mapping in _mappings)
             {
@@ -122,9 +134,11 @@ namespace OrcaPod.Utils
             }
         }
 
-        public void Dispose()
+        public static void Dispose()
         {
             // Cleanup if necessary
+            _logger = null;
+            _mappings.Clear();
         }
     }
 }
