@@ -41,5 +41,5 @@ jobs:
         run: |
           dotnet tool install -g vpk
           vpk download github --repoUrl https://github.com/${{ github.repository }} --token ${{ secrets.GITHUB_TOKEN }}
-          vpk pack -u orcapod -v ${{ steps.get-version.outputs.version }} --packDir publish
+          vpk pack -u orcapod -v "${{ steps.get-version.outputs.version }}" --packDir publish
           vpk upload github --repoUrl https://github.com/${{ github.repository }} --publish --releaseName "orcapod ${{ steps.get-version.outputs.version }}" --tag v${{ steps.get-version.outputs.version }} --token ${{ secrets.GITHUB_TOKEN }}
