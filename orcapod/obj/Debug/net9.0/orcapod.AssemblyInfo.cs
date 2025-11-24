@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("orcapod")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("0.0.1.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.0.1+8f08c95724ddb7b2f241c164481f1441283efbbc")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("0.0.1+3224df070b588aa5eea212b4164fdce72f56b57c")]
 [assembly: System.Reflection.AssemblyProductAttribute("orcapod")]
 [assembly: System.Reflection.AssemblyTitleAttribute("orcapod")]
 [assembly: System.Reflection.AssemblyVersionAttribute("0.0.1.0")]

@@ -82,3 +82,21 @@
 2025-11-24 14:41:45 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\README_backup.md' does not exist as a file or directory, skipping.
 2025-11-24 14:41:45 [INFO] Watchdog started.
 2025-11-24 14:42:02 [INFO] MainService stopping
+2025-11-24 14:50:07 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-24 14:50:12 [INFO] Autostart install flagged for current user.
+2025-11-24 14:50:12 [INFO] Found .desktop file for OrcaSlicer: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:50:12 [INFO] Modifying .desktop file: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:50:12 [INFO] Created launch wrapper script: /home/indigo/.local/share/orcapod/launch_wrapper_OrcaSlicer.sh
+2025-11-24 14:50:12 [INFO] Modified .desktop file: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:50:17 [INFO] Autostart removal flagged for current user.
+2025-11-24 14:50:17 [INFO] Found .desktop file for OrcaSlicer: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:50:17 [INFO] Removing launch wrapper from: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:50:17 [INFO] Deleted wrapper script: /home/indigo/.local/share/orcapod/launch_wrapper_OrcaSlicer.sh
+2025-11-24 14:50:17 [INFO] Deleted modified .desktop file: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:50:18 [INFO] Autostart install flagged for current user.
+2025-11-24 14:50:18 [INFO] Found .desktop file for OrcaSlicer: /usr/share/applications/OrcaSlicer.desktop
+2025-11-24 14:50:18 [INFO] Modifying .desktop file: /usr/share/applications/OrcaSlicer.desktop
+2025-11-24 14:50:18 [INFO] Created launch wrapper script: /home/indigo/.local/share/orcapod/launch_wrapper_OrcaSlicer.sh
+2025-11-24 14:50:18 [INFO] System .desktop file detected. Creating local copy at: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:50:18 [INFO] Modified .desktop file: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:50:20 [INFO] Exiting.
