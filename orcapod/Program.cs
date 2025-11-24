@@ -27,6 +27,12 @@ namespace OrcaPod
                 var command = args[0].ToLowerInvariant();
                 switch (command)
                 {
+                    case "--background":
+                    case "--service":
+                    case "background":
+                    case "service":
+                        shouldRunHost = true;
+                        break;
                     case "--console":
                     case "console":
                         Environment.SetEnvironmentVariable("ORCAPOD_CONSOLE", "1");

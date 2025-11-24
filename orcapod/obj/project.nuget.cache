@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "t15WPqJoLzs=",
+  "dgSpecHash": "zCbnKtkXQ+A=",
   "success": true,
   "projectFilePath": "/mnt/storage/Projects/orcapod/orcapod/orcapod.csproj",
   "expectedPackageFiles": [
@@ -43,8 +43,7 @@
     "/home/indigo/.nuget/packages/system.text.json/8.0.0/system.text.json.8.0.0.nupkg.sha512",
     "/home/indigo/.nuget/packages/taskscheduler/2.12.2/taskscheduler.2.12.2.nupkg.sha512",
     "/home/indigo/.nuget/packages/velopack/0.0.1298/velopack.0.0.1298.nupkg.sha512",
-    "/home/indigo/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.9/microsoft.aspnetcore.app.ref.9.0.9.nupkg.sha512",
-    "/home/indigo/.nuget/packages/microsoft.netcore.app.host.linux-x64/9.0.9/microsoft.netcore.app.host.linux-x64.9.0.9.nupkg.sha512"
+    "/home/indigo/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.9/microsoft.aspnetcore.app.ref.9.0.9.nupkg.sha512"
   ],
   "logs": []
 }

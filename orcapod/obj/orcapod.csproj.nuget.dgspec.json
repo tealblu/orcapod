@@ -88,10 +88,6 @@
             {
               "name": "Microsoft.AspNetCore.App.Ref",
               "version": "[9.0.9, 9.0.9]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.linux-x64",
-              "version": "[9.0.9, 9.0.9]"
             }
           ],
           "frameworkReferences": {
@@ -100,11 +96,6 @@
             }
           },
           "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "linux-x64": {
-          "#import": []
         }
       }
     }

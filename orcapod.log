@@ -1,0 +1,71 @@
+2025-11-24 14:48:21 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-24 14:48:21 [INFO] Starting OrcaPod host...
+2025-11-24 14:48:21 [INFO] Reading settings from configuration file.
+2025-11-24 14:48:21 [INFO] Monitoring processes: OrcaSlicer
+2025-11-24 14:48:21 [INFO] Added paths from Mappings keys: C:\Users\ckhar\Projects\orcapod-proj\testfiles, C:\Users\ckhar\Projects\orcapod-proj\README.md
+2025-11-24 14:48:21 [INFO] Added paths from Mappings values: C:\Users\ckhar\Projects\orcapod-proj\testbackups, C:\Users\ckhar\Projects\orcapod-proj\README_backup.md
+2025-11-24 14:48:21 [INFO] Loading backup mappings
+2025-11-24 14:48:21 [INFO] Mapping loaded: C:\Users\ckhar\Projects\orcapod-proj\testfiles -> C:\Users\ckhar\Projects\orcapod-proj\testbackups
+2025-11-24 14:48:21 [INFO] Mapping loaded: C:\Users\ckhar\Projects\orcapod-proj\README.md -> C:\Users\ckhar\Projects\orcapod-proj\README_backup.md
+2025-11-24 14:48:21 [INFO] Syncing configurations with backups
+2025-11-24 14:48:21 [INFO] No newer backup found for 'C:\Users\ckhar\Projects\orcapod-proj\testfiles', backing up.
+2025-11-24 14:48:21 [ERROR] Failed to back up 'C:\Users\ckhar\Projects\orcapod-proj\testfiles' to 'C:\Users\ckhar\Projects\orcapod-proj\testbackups': Could not find file '/mnt/storage/Projects/orcapod/C:\Users\ckhar\Projects\orcapod-proj\testfiles'.
+2025-11-24 14:48:21 [INFO] No newer backup found for 'C:\Users\ckhar\Projects\orcapod-proj\README.md', backing up.
+2025-11-24 14:48:21 [ERROR] Failed to back up 'C:\Users\ckhar\Projects\orcapod-proj\README.md' to 'C:\Users\ckhar\Projects\orcapod-proj\README_backup.md': Could not find file '/mnt/storage/Projects/orcapod/C:\Users\ckhar\Projects\orcapod-proj\README.md'.
+2025-11-24 14:48:21 [INFO] MainService starting
+2025-11-24 14:48:21 [INFO] Status report: ServiceName=OrcapodMainService, RunCount=0
+2025-11-24 14:48:21 [INFO] Process monitoring enabled. Checking for: OrcaSlicer
+2025-11-24 14:48:21 [WARNING] None of the monitored processes are currently running.
+2025-11-24 14:48:21 [INFO] No monitored processes are running. Shutting down.
+2025-11-24 14:48:21 [INFO] All monitored processes have exited. Requesting application shutdown.
+2025-11-24 14:48:21 [INFO] MainService stopping
+2025-11-24 14:48:23 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-24 14:48:23 [INFO] Starting OrcaPod host...
+2025-11-24 14:48:23 [INFO] Reading settings from configuration file.
+2025-11-24 14:48:23 [INFO] Monitoring processes: OrcaSlicer
+2025-11-24 14:48:23 [INFO] Added paths from Mappings keys: C:\Users\ckhar\Projects\orcapod-proj\testfiles, C:\Users\ckhar\Projects\orcapod-proj\README.md
+2025-11-24 14:48:23 [INFO] Added paths from Mappings values: C:\Users\ckhar\Projects\orcapod-proj\testbackups, C:\Users\ckhar\Projects\orcapod-proj\README_backup.md
+2025-11-24 14:48:23 [INFO] Loading backup mappings
+2025-11-24 14:48:23 [INFO] Mapping loaded: C:\Users\ckhar\Projects\orcapod-proj\testfiles -> C:\Users\ckhar\Projects\orcapod-proj\testbackups
+2025-11-24 14:48:23 [INFO] Mapping loaded: C:\Users\ckhar\Projects\orcapod-proj\README.md -> C:\Users\ckhar\Projects\orcapod-proj\README_backup.md
+2025-11-24 14:48:23 [INFO] Syncing configurations with backups
+2025-11-24 14:48:23 [INFO] No newer backup found for 'C:\Users\ckhar\Projects\orcapod-proj\testfiles', backing up.
+2025-11-24 14:48:23 [ERROR] Failed to back up 'C:\Users\ckhar\Projects\orcapod-proj\testfiles' to 'C:\Users\ckhar\Projects\orcapod-proj\testbackups': Could not find file '/mnt/storage/Projects/orcapod/C:\Users\ckhar\Projects\orcapod-proj\testfiles'.
+2025-11-24 14:48:23 [INFO] No newer backup found for 'C:\Users\ckhar\Projects\orcapod-proj\README.md', backing up.
+2025-11-24 14:48:23 [ERROR] Failed to back up 'C:\Users\ckhar\Projects\orcapod-proj\README.md' to 'C:\Users\ckhar\Projects\orcapod-proj\README_backup.md': Could not find file '/mnt/storage/Projects/orcapod/C:\Users\ckhar\Projects\orcapod-proj\README.md'.
+2025-11-24 14:48:23 [INFO] MainService starting
+2025-11-24 14:48:23 [INFO] Status report: ServiceName=OrcapodMainService, RunCount=0
+2025-11-24 14:48:23 [INFO] Process monitoring enabled. Checking for: OrcaSlicer
+2025-11-24 14:48:23 [WARNING] None of the monitored processes are currently running.
+2025-11-24 14:48:23 [INFO] No monitored processes are running. Shutting down.
+2025-11-24 14:48:23 [INFO] All monitored processes have exited. Requesting application shutdown.
+2025-11-24 14:48:23 [INFO] MainService stopping
+2025-11-24 14:48:38 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-24 14:48:38 [INFO] Starting OrcaPod host...
+2025-11-24 14:48:38 [INFO] Reading settings from configuration file.
+2025-11-24 14:48:38 [INFO] Monitoring processes: OrcaSlicer
+2025-11-24 14:48:38 [INFO] Added paths from Mappings keys: C:\Users\ckhar\Projects\orcapod-proj\testfiles, C:\Users\ckhar\Projects\orcapod-proj\README.md
+2025-11-24 14:48:38 [INFO] Added paths from Mappings values: C:\Users\ckhar\Projects\orcapod-proj\testbackups, C:\Users\ckhar\Projects\orcapod-proj\README_backup.md
+2025-11-24 14:48:38 [INFO] Loading backup mappings
+2025-11-24 14:48:38 [INFO] Mapping loaded: C:\Users\ckhar\Projects\orcapod-proj\testfiles -> C:\Users\ckhar\Projects\orcapod-proj\testbackups
+2025-11-24 14:48:38 [INFO] Mapping loaded: C:\Users\ckhar\Projects\orcapod-proj\README.md -> C:\Users\ckhar\Projects\orcapod-proj\README_backup.md
+2025-11-24 14:48:38 [INFO] Syncing configurations with backups
+2025-11-24 14:48:38 [INFO] No newer backup found for 'C:\Users\ckhar\Projects\orcapod-proj\testfiles', backing up.
+2025-11-24 14:48:38 [ERROR] Failed to back up 'C:\Users\ckhar\Projects\orcapod-proj\testfiles' to 'C:\Users\ckhar\Projects\orcapod-proj\testbackups': Could not find file '/mnt/storage/Projects/orcapod/C:\Users\ckhar\Projects\orcapod-proj\testfiles'.
+2025-11-24 14:48:38 [INFO] No newer backup found for 'C:\Users\ckhar\Projects\orcapod-proj\README.md', backing up.
+2025-11-24 14:48:38 [ERROR] Failed to back up 'C:\Users\ckhar\Projects\orcapod-proj\README.md' to 'C:\Users\ckhar\Projects\orcapod-proj\README_backup.md': Could not find file '/mnt/storage/Projects/orcapod/C:\Users\ckhar\Projects\orcapod-proj\README.md'.
+2025-11-24 14:48:38 [INFO] MainService starting
+2025-11-24 14:48:38 [INFO] Status report: ServiceName=OrcapodMainService, RunCount=0
+2025-11-24 14:48:38 [INFO] Process monitoring enabled. Checking for: OrcaSlicer
+2025-11-24 14:48:38 [INFO] Found running process: orcaslicer_main (PID: 900087)
+2025-11-24 14:48:38 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\testfiles' does not exist as a file or directory, skipping.
+2025-11-24 14:48:38 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\README.md' does not exist as a file or directory, skipping.
+2025-11-24 14:48:38 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\testbackups' does not exist as a file or directory, skipping.
+2025-11-24 14:48:38 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\README_backup.md' does not exist as a file or directory, skipping.
+2025-11-24 14:48:38 [INFO] Watchdog started.
+2025-11-24 14:49:08 [INFO] Status report: ServiceName=OrcapodMainService, RunCount=1
+2025-11-24 14:49:08 [INFO] Process monitoring enabled. Checking for: OrcaSlicer
+2025-11-24 14:49:08 [WARNING] None of the monitored processes are currently running.
+2025-11-24 14:49:08 [INFO] No monitored processes are running. Shutting down.
+2025-11-24 14:49:08 [INFO] All monitored processes have exited. Requesting application shutdown.
+2025-11-24 14:49:08 [INFO] MainService stopping

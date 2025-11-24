@@ -9,14 +9,18 @@ namespace OrcaPod.Service
     public class HostedMainService : BackgroundService
     {
         private readonly MainService _service;
+        private readonly IHostApplicationLifetime _appLifetime;
 
-        public HostedMainService(MainService service)
+        public HostedMainService(MainService service, IHostApplicationLifetime appLifetime)
         {
             _service = service;
+            _appLifetime = appLifetime;
         }
 
         public override Task StartAsync(CancellationToken cancellationToken)
         {
+            // Subscribe to the event that fires when all monitored processes have exited
+            _service.AllProcessesExited += OnAllProcessesExited;
             _service.Start();
             return Task.CompletedTask;
         }
@@ -31,8 +35,16 @@ namespace OrcaPod.Service
 
         public override Task StopAsync(CancellationToken cancellationToken)
         {
+            _service.AllProcessesExited -= OnAllProcessesExited;
             _service.Stop();
             return Task.CompletedTask;
+        }
+        
+        private void OnAllProcessesExited(object? sender, System.EventArgs e)
+        {
+            LogHandler.LogInfo("All monitored processes have exited. Requesting application shutdown.");
+            // Request graceful shutdown of the application
+            _appLifetime.StopApplication();
         }
     }
 }

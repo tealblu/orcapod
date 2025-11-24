@@ -134,10 +134,10 @@ namespace Orcapod.Utils
                             writer.WriteLine($"start \"\" \"{orcapodPath}\"");
                         }
                     }
-                    catch (UnauthorizedAccessException ex)
+                    catch (UnauthorizedAccessException)
                     {
 #if WINDOWS
-                        LogHandler.LogError($"Access denied when writing launch wrapper. Attempting to relaunch with admin rights: {ex.Message}");
+                        LogHandler.LogError($"Access denied when writing launch wrapper. Attempting to relaunch with admin rights.");
                         try
                         {
                             string exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName ?? System.Reflection.Assembly.GetExecutingAssembly().Location;
@@ -266,6 +266,7 @@ namespace Orcapod.Utils
             }
         }
 
+        [SupportedOSPlatform("windows")]
         private static void UninstallOnWindows()
         {
             foreach (var target in _programTargets)
@@ -317,14 +318,6 @@ namespace Orcapod.Utils
                 {
                     // Get the user's home directory
                     string homeDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                    string autostartDir = Path.Combine(homeDir, ".config", "autostart");
-
-                    // Ensure autostart directory exists
-                    if (!Directory.Exists(autostartDir))
-                    {
-                        Directory.CreateDirectory(autostartDir);
-                        LogHandler.LogInfo($"Created autostart directory: {autostartDir}");
-                    }
 
                     // Search for the target's .desktop file in common locations
                     string[] searchPaths = new[]
@@ -357,9 +350,8 @@ namespace Orcapod.Utils
                         throw new FileNotFoundException($".desktop file for {target} not found in standard locations.");
                     }
 
-                    // Create a modified .desktop file in autostart directory
-                    string autostartDesktopFile = Path.Combine(autostartDir, Path.GetFileName(sourceDesktopFile));
-                    InjectLaunchWrapperLinux(sourceDesktopFile, autostartDesktopFile);
+                    // Modify the .desktop file directly (or create a local copy if in system directory)
+                    InjectLaunchWrapperLinux(sourceDesktopFile);
                 }
                 catch (Exception ex)
                 {
@@ -368,15 +360,27 @@ namespace Orcapod.Utils
             }
         }
 
-        private static void InjectLaunchWrapperLinux(string sourceDesktopFile, string autostartDesktopFile)
+        private static void InjectLaunchWrapperLinux(string desktopFile)
         {
-            LogHandler.LogInfo($"Creating modified .desktop file: {autostartDesktopFile}");
+            LogHandler.LogInfo($"Modifying .desktop file: {desktopFile}");
 
             // Get path for orcapod executable
-            string orcapodPath = System.Reflection.Assembly.GetExecutingAssembly().Location;
+            string orcapodPath = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName 
+                ?? System.Reflection.Assembly.GetExecutingAssembly().Location;
+            
+            // If we got the .dll path, try to find the executable in the same directory
+            if (orcapodPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+            {
+                string directory = Path.GetDirectoryName(orcapodPath) ?? "";
+                string executablePath = Path.Combine(directory, "orcapod");
+                if (File.Exists(executablePath))
+                {
+                    orcapodPath = executablePath;
+                }
+            }
 
             // Read the original .desktop file
-            var lines = File.ReadAllLines(sourceDesktopFile);
+            var lines = File.ReadAllLines(desktopFile);
             string? originalExec = null;
             bool alreadyModified = false;
 
@@ -414,7 +418,7 @@ namespace Orcapod.Utils
                 Directory.CreateDirectory(wrapperDir);
             }
 
-            string wrapperScript = Path.Combine(wrapperDir, $"launch_wrapper_{Path.GetFileNameWithoutExtension(sourceDesktopFile)}.sh");
+            string wrapperScript = Path.Combine(wrapperDir, $"launch_wrapper_{Path.GetFileNameWithoutExtension(desktopFile)}.sh");
 
             try
             {
@@ -422,7 +426,7 @@ namespace Orcapod.Utils
                 {
                     writer.WriteLine("#!/bin/bash");
                     writer.WriteLine($"{originalExec} &");
-                    writer.WriteLine($"\"{orcapodPath}\" &");
+                    writer.WriteLine($"\"{orcapodPath}\" --background &");
                 }
 
                 // Make the script executable
@@ -444,10 +448,30 @@ namespace Orcapod.Utils
                 return;
             }
 
+            // Determine target file location
+            string homeDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string localAppsDir = Path.Combine(homeDir, ".local", "share", "applications");
+            string targetDesktopFile;
+
+            // If the desktop file is in a system directory, create a local copy
+            if (desktopFile.StartsWith("/usr/"))
+            {
+                if (!Directory.Exists(localAppsDir))
+                {
+                    Directory.CreateDirectory(localAppsDir);
+                }
+                targetDesktopFile = Path.Combine(localAppsDir, Path.GetFileName(desktopFile));
+                LogHandler.LogInfo($"System .desktop file detected. Creating local copy at: {targetDesktopFile}");
+            }
+            else
+            {
+                targetDesktopFile = desktopFile;
+            }
+
             // Write modified .desktop file with wrapper script
             try
             {
-                using (var writer = new StreamWriter(autostartDesktopFile))
+                using (var writer = new StreamWriter(targetDesktopFile))
                 {
                     foreach (var line in lines)
                     {
@@ -462,11 +486,11 @@ namespace Orcapod.Utils
                     }
                 }
 
-                LogHandler.LogInfo($"Created autostart .desktop file: {autostartDesktopFile}");
+                LogHandler.LogInfo($"Modified .desktop file: {targetDesktopFile}");
             }
             catch (Exception ex)
             {
-                LogHandler.LogError($"Failed to create autostart .desktop file: {ex.Message}");
+                LogHandler.LogError($"Failed to modify .desktop file: {ex.Message}");
             }
         }
 
@@ -478,29 +502,31 @@ namespace Orcapod.Utils
                 {
                     // Get the user's home directory
                     string homeDir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                    string autostartDir = Path.Combine(homeDir, ".config", "autostart");
 
-                    if (!Directory.Exists(autostartDir))
+                    // Search for the target's .desktop file in local applications
+                    string localAppsDir = Path.Combine(homeDir, ".local", "share", "applications");
+                    
+                    if (!Directory.Exists(localAppsDir))
                     {
-                        LogHandler.LogInfo($"Autostart directory does not exist. Nothing to uninstall for {target}.");
+                        LogHandler.LogInfo($"Local applications directory does not exist. Nothing to uninstall for {target}.");
                         continue;
                     }
 
-                    // Find the .desktop file in autostart directory
-                    var autostartFiles = Directory.GetFiles(autostartDir, "*.desktop", SearchOption.TopDirectoryOnly)
+                    // Find the .desktop file
+                    var desktopFiles = Directory.GetFiles(localAppsDir, "*.desktop", SearchOption.TopDirectoryOnly)
                         .Where(f => Path.GetFileNameWithoutExtension(f).Contains(target, StringComparison.OrdinalIgnoreCase))
                         .ToList();
 
-                    string? autostartDesktopFile = autostartFiles.FirstOrDefault();
+                    string? desktopFile = desktopFiles.FirstOrDefault();
 
-                    if (autostartDesktopFile == null)
+                    if (desktopFile == null)
                     {
-                        LogHandler.LogInfo($"No autostart .desktop file found for {target}.");
+                        LogHandler.LogInfo($"No modified .desktop file found for {target}.");
                         continue;
                     }
 
-                    LogHandler.LogInfo($"Found autostart .desktop file for {target}: {autostartDesktopFile}");
-                    RemoveLaunchWrapperLinux(autostartDesktopFile);
+                    LogHandler.LogInfo($"Found .desktop file for {target}: {desktopFile}");
+                    RemoveLaunchWrapperLinux(desktopFile);
                 }
                 catch (Exception ex)
                 {
@@ -509,15 +535,16 @@ namespace Orcapod.Utils
             }
         }
 
-        private static void RemoveLaunchWrapperLinux(string autostartDesktopFile)
+        private static void RemoveLaunchWrapperLinux(string desktopFile)
         {
-            LogHandler.LogInfo($"Removing launch wrapper from: {autostartDesktopFile}");
+            LogHandler.LogInfo($"Removing launch wrapper from: {desktopFile}");
 
             try
             {
                 // Read the .desktop file to find the wrapper script
-                var lines = File.ReadAllLines(autostartDesktopFile);
+                var lines = File.ReadAllLines(desktopFile);
                 string? wrapperScript = null;
+                string? originalExec = null;
 
                 foreach (var line in lines)
                 {
@@ -528,13 +555,29 @@ namespace Orcapod.Utils
                     }
                 }
 
-                // Delete the .desktop file from autostart
-                File.Delete(autostartDesktopFile);
-                LogHandler.LogInfo($"Deleted autostart .desktop file: {autostartDesktopFile}");
-
-                // Delete the wrapper script if it exists
-                if (!string.IsNullOrEmpty(wrapperScript) && File.Exists(wrapperScript) && wrapperScript.Contains("orcapod"))
+                // If the Exec line points to a wrapper script, read it to get the original command
+                if (!string.IsNullOrEmpty(wrapperScript) && wrapperScript.Contains("orcapod") && File.Exists(wrapperScript))
                 {
+                    try
+                    {
+                        var wrapperLines = File.ReadAllLines(wrapperScript);
+                        foreach (var line in wrapperLines)
+                        {
+                            // Find the line that starts the original program (not orcapod)
+                            if (!line.StartsWith("#") && !string.IsNullOrWhiteSpace(line) && !line.Contains("orcapod"))
+                            {
+                                // Remove trailing ' &' if present
+                                originalExec = line.TrimEnd().TrimEnd('&').Trim();
+                                break;
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHandler.LogError($"Failed to read wrapper script: {ex.Message}");
+                    }
+
+                    // Delete the wrapper script
                     try
                     {
                         File.Delete(wrapperScript);
@@ -545,6 +588,11 @@ namespace Orcapod.Utils
                         LogHandler.LogError($"Failed to delete wrapper script: {ex.Message}");
                     }
                 }
+
+                // Delete the modified .desktop file from local applications
+                // This will cause the system to fall back to the original .desktop file
+                File.Delete(desktopFile);
+                LogHandler.LogInfo($"Deleted modified .desktop file: {desktopFile}");
             }
             catch (Exception ex)
             {

@@ -6,18 +6,22 @@ OrcaPod is a tool designed to backup and sync configuration files for Orca Slice
 
 ## Features
 
-- Backup Orca Slicer config files
-- Sync configs across multiple devices
-- Support for additional app configs
-- Easy restore and migration
+-   **Automatic Process Monitoring**: OrcaPod automatically detects when Orca Slicer exits and shuts down gracefully
+-   Backup Orca Slicer config files
+-   Sync configs across multiple devices
+-   Support for additional app configs
+-   Easy restore and migration
+-   Cross-platform support (Windows, Linux, macOS)
 
 ## Roadmap
-- ~~Basic config syncing~~
-- ~~Autostart when OrcaSlicer starts~~
-- Autostart on Linux
-- UI for managing settings
-- Migrate from console UI to GUI
-- Cloud sync
+
+-   ~~Basic config syncing~~
+-   ~~Autostart when OrcaSlicer starts~~
+-   ~~Auto-quit when OrcaSlicer exits~~
+-   Autostart on Linux
+-   UI for managing settings
+-   Migrate from console UI to GUI
+-   Cloud sync
 
 ## Getting Started
 
@@ -29,14 +33,32 @@ OrcaPod is a tool designed to backup and sync configuration files for Orca Slice
 
 ## Usage
 
-- Run the backup script to save your configs.
-- Use the sync feature to update configs on other devices.
-- Restore configs as needed.
+-   Run OrcaPod with `--console` flag for debugging: `./orcapod --console`
+-   OrcaPod will automatically monitor for Orca Slicer and quit when it exits
+-   Configure process monitoring and backup paths in `settings.json`
+-   See [PROCESS_MONITORING.md](PROCESS_MONITORING.md) for detailed information about process monitoring
+
+### Configuration
+
+Edit `settings.json` to customize OrcaPod's behavior:
+
+```json
+{
+    "General": {
+        "Interval": "00:00:30",
+        "MonitorProcesses": true
+    },
+    "ProgramTargets": ["OrcaSlicer"],
+    "Mappings": {
+        "source/path": "backup/path"
+    }
+}
+```
 
 ## Compatibility
 
-- Orca Slicer
-- Other supported apps
+-   Orca Slicer
+-   Other supported apps
 
 ## Contributing
 

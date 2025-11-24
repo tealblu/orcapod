@@ -26,3 +26,59 @@
 2025-11-24 14:22:09 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\README_backup.md' does not exist as a file or directory, skipping.
 2025-11-24 14:22:09 [INFO] Watchdog started.
 2025-11-24 14:22:16 [INFO] MainService stopping
+2025-11-24 14:36:31 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-24 14:36:34 [INFO] Autostart install flagged for current user.
+2025-11-24 14:36:34 [INFO] Found .desktop file for OrcaSlicer: /usr/share/applications/OrcaSlicer.desktop
+2025-11-24 14:36:34 [INFO] Modifying .desktop file: /usr/share/applications/OrcaSlicer.desktop
+2025-11-24 14:36:34 [INFO] Created launch wrapper script: /home/indigo/.local/share/orcapod/launch_wrapper_OrcaSlicer.sh
+2025-11-24 14:36:34 [INFO] System .desktop file detected. Creating local copy at: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:36:34 [INFO] Modified .desktop file: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:36:40 [INFO] Exiting.
+2025-11-24 14:38:40 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-24 14:38:40 [INFO] Autostart removal flagged for current user.
+2025-11-24 14:38:40 [INFO] Found .desktop file for OrcaSlicer: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:38:40 [INFO] Removing launch wrapper from: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:38:40 [INFO] Deleted wrapper script: /home/indigo/.local/share/orcapod/launch_wrapper_OrcaSlicer.sh
+2025-11-24 14:38:40 [INFO] Deleted modified .desktop file: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:38:46 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-24 14:38:46 [INFO] Autostart install flagged for current user.
+2025-11-24 14:38:46 [INFO] Found .desktop file for OrcaSlicer: /usr/share/applications/OrcaSlicer.desktop
+2025-11-24 14:38:46 [INFO] Modifying .desktop file: /usr/share/applications/OrcaSlicer.desktop
+2025-11-24 14:38:46 [INFO] Created launch wrapper script: /home/indigo/.local/share/orcapod/launch_wrapper_OrcaSlicer.sh
+2025-11-24 14:38:46 [INFO] System .desktop file detected. Creating local copy at: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:38:46 [INFO] Modified .desktop file: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:39:02 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-24 14:41:33 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-24 14:41:33 [INFO] Autostart removal flagged for current user.
+2025-11-24 14:41:33 [INFO] Found .desktop file for OrcaSlicer: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:41:33 [INFO] Removing launch wrapper from: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:41:33 [INFO] Deleted wrapper script: /home/indigo/.local/share/orcapod/launch_wrapper_OrcaSlicer.sh
+2025-11-24 14:41:33 [INFO] Deleted modified .desktop file: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:41:34 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-24 14:41:34 [INFO] Autostart install flagged for current user.
+2025-11-24 14:41:34 [INFO] Found .desktop file for OrcaSlicer: /usr/share/applications/OrcaSlicer.desktop
+2025-11-24 14:41:34 [INFO] Modifying .desktop file: /usr/share/applications/OrcaSlicer.desktop
+2025-11-24 14:41:34 [INFO] Created launch wrapper script: /home/indigo/.local/share/orcapod/launch_wrapper_OrcaSlicer.sh
+2025-11-24 14:41:34 [INFO] System .desktop file detected. Creating local copy at: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:41:34 [INFO] Modified .desktop file: /home/indigo/.local/share/applications/OrcaSlicer.desktop
+2025-11-24 14:41:45 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-24 14:41:45 [INFO] Starting OrcaPod host...
+2025-11-24 14:41:45 [INFO] Reading settings from configuration file.
+2025-11-24 14:41:45 [INFO] Added paths from Mappings keys: C:\Users\ckhar\Projects\orcapod-proj\testfiles, C:\Users\ckhar\Projects\orcapod-proj\README.md
+2025-11-24 14:41:45 [INFO] Added paths from Mappings values: C:\Users\ckhar\Projects\orcapod-proj\testbackups, C:\Users\ckhar\Projects\orcapod-proj\README_backup.md
+2025-11-24 14:41:45 [INFO] Loading backup mappings
+2025-11-24 14:41:45 [INFO] Mapping loaded: C:\Users\ckhar\Projects\orcapod-proj\testfiles -> C:\Users\ckhar\Projects\orcapod-proj\testbackups
+2025-11-24 14:41:45 [INFO] Mapping loaded: C:\Users\ckhar\Projects\orcapod-proj\README.md -> C:\Users\ckhar\Projects\orcapod-proj\README_backup.md
+2025-11-24 14:41:45 [INFO] Syncing configurations with backups
+2025-11-24 14:41:45 [INFO] No newer backup found for 'C:\Users\ckhar\Projects\orcapod-proj\testfiles', backing up.
+2025-11-24 14:41:45 [ERROR] Failed to back up 'C:\Users\ckhar\Projects\orcapod-proj\testfiles' to 'C:\Users\ckhar\Projects\orcapod-proj\testbackups': Could not find file '/mnt/storage/Projects/orcapod/orcapod/C:\Users\ckhar\Projects\orcapod-proj\testfiles'.
+2025-11-24 14:41:45 [INFO] No newer backup found for 'C:\Users\ckhar\Projects\orcapod-proj\README.md', backing up.
+2025-11-24 14:41:45 [ERROR] Failed to back up 'C:\Users\ckhar\Projects\orcapod-proj\README.md' to 'C:\Users\ckhar\Projects\orcapod-proj\README_backup.md': Could not find file '/mnt/storage/Projects/orcapod/orcapod/C:\Users\ckhar\Projects\orcapod-proj\README.md'.
+2025-11-24 14:41:45 [INFO] MainService starting
+2025-11-24 14:41:45 [INFO] Status report: ServiceName=OrcapodMainService, RunCount=0
+2025-11-24 14:41:45 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\testfiles' does not exist as a file or directory, skipping.
+2025-11-24 14:41:45 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\README.md' does not exist as a file or directory, skipping.
+2025-11-24 14:41:45 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\testbackups' does not exist as a file or directory, skipping.
+2025-11-24 14:41:45 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\README_backup.md' does not exist as a file or directory, skipping.
+2025-11-24 14:41:45 [INFO] Watchdog started.
+2025-11-24 14:42:02 [INFO] MainService stopping

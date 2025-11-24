@@ -20,12 +20,17 @@ namespace OrcaPod.Service
         private CancellationTokenSource? _cts;
         private int _runCount;
         private int? _maxRuns;
+        private bool _monitorProcesses = true;
+        private List<string> _programTargets = new List<string>();
 
         internal List<string> pathsToWatch = new List<string>();
 
         internal Utils.Watchdog wd = null!;
 
         public string ServiceName { get; } = "OrcapodMainService";
+        
+        // Event raised when all monitored processes have exited
+        public event EventHandler? AllProcessesExited;
 
         public MainService()
         {
@@ -88,6 +93,19 @@ namespace OrcaPod.Service
                 // Keep this method cross-platform and lightweight.
                 PrintStatusReport();
                 var current = Interlocked.Increment(ref _runCount);
+                
+                // Check if monitored processes are still running
+                if (_monitorProcesses && _programTargets.Count > 0)
+                {
+                    if (!AnyMonitoredProcessRunning())
+                    {
+                        LogHandler.LogInfo("No monitored processes are running. Shutting down.");
+                        AllProcessesExited?.Invoke(this, EventArgs.Empty);
+                        try { Stop(); } catch { }
+                        return;
+                    }
+                }
+                
                 if (_maxRuns.HasValue)
                 {
                     if (current >= _maxRuns.Value)
@@ -143,6 +161,10 @@ namespace OrcaPod.Service
         private void PrintStatusReport()
         {
             LogHandler.LogInfo($"Status report: ServiceName={ServiceName}, RunCount={_runCount}");
+            if (_monitorProcesses && _programTargets.Count > 0)
+            {
+                LogHandler.LogInfo($"Process monitoring enabled. Checking for: {string.Join(", ", _programTargets)}");
+            }
         }
 
         private void ReadSettingsFromConfig()
@@ -157,6 +179,30 @@ namespace OrcaPod.Service
             if (int.TryParse(SettingsHandler.Get("General:MaxRuns"), out var maxRuns))
             {
                 _maxRuns = maxRuns;
+            }
+            
+            // Read process monitoring setting
+            var monitorProcessesStr = SettingsHandler.Get("General:MonitorProcesses");
+            if (!string.IsNullOrEmpty(monitorProcessesStr) && bool.TryParse(monitorProcessesStr, out var monitorProcesses))
+            {
+                _monitorProcesses = monitorProcesses;
+            }
+            
+            // Read program targets to monitor
+            var programTargetsSection = SettingsHandler.GetSection("ProgramTargets");
+            if (programTargetsSection != null)
+            {
+                foreach (var kvp in programTargetsSection.AsEnumerable())
+                {
+                    if (kvp.Value != null && kvp.Key != "ProgramTargets")
+                    {
+                        _programTargets.Add(kvp.Value);
+                    }
+                }
+                if (_programTargets.Count > 0)
+                {
+                    LogHandler.LogInfo($"Monitoring processes: {string.Join(", ", _programTargets)}");
+                }
             }
 
             var mappingsSection = SettingsHandler.GetSection("Mappings");
@@ -185,6 +231,50 @@ namespace OrcaPod.Service
                     pathsToWatch.AddRange(mappingValues);
                     LogHandler.LogInfo($"Added paths from Mappings values: {string.Join(", ", mappingValues)}");
                 }
+            }
+        }
+        
+        /// <summary>
+        /// Checks if any of the monitored processes are currently running.
+        /// This is cross-platform compatible.
+        /// </summary>
+        private bool AnyMonitoredProcessRunning()
+        {
+            if (_programTargets.Count == 0)
+                return true; // No processes to monitor, keep running
+            
+            try
+            {
+                var allProcesses = System.Diagnostics.Process.GetProcesses();
+                foreach (var target in _programTargets)
+                {
+                    var targetLower = target.ToLowerInvariant();
+                    foreach (var process in allProcesses)
+                    {
+                        try
+                        {
+                            var processName = process.ProcessName.ToLowerInvariant();
+                            // Check if process name matches (case-insensitive)
+                            if (processName == targetLower || processName.Contains(targetLower))
+                            {
+                                LogHandler.LogInfo($"Found running process: {process.ProcessName} (PID: {process.Id})");
+                                return true;
+                            }
+                        }
+                        catch
+                        {
+                            // Some processes may not be accessible, skip them
+                            continue;
+                        }
+                    }
+                }
+                LogHandler.LogWarning("None of the monitored processes are currently running.");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                LogHandler.LogError($"Error checking for running processes: {ex.Message}");
+                return true; // On error, assume processes are running to avoid premature shutdown
             }
         }
     }
