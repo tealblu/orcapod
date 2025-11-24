@@ -1,0 +1,28 @@
+2025-11-24 14:14:31 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-24 14:21:55 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-24 14:22:00 [INFO] Autostart install flagged for current user.
+2025-11-24 14:22:00 [INFO] Found .desktop file for OrcaSlicer: /usr/share/applications/OrcaSlicer.desktop
+2025-11-24 14:22:00 [INFO] Creating modified .desktop file: /home/indigo/.config/autostart/OrcaSlicer.desktop
+2025-11-24 14:22:00 [INFO] Created launch wrapper script: /home/indigo/.local/share/orcapod/launch_wrapper_OrcaSlicer.sh
+2025-11-24 14:22:00 [INFO] Created autostart .desktop file: /home/indigo/.config/autostart/OrcaSlicer.desktop
+2025-11-24 14:22:09 [INFO] Console mode enabled.
+2025-11-24 14:22:09 [INFO] Starting OrcaPod host...
+2025-11-24 14:22:09 [INFO] Reading settings from configuration file.
+2025-11-24 14:22:09 [INFO] Added paths from Mappings keys: C:\Users\ckhar\Projects\orcapod-proj\testfiles, C:\Users\ckhar\Projects\orcapod-proj\README.md
+2025-11-24 14:22:09 [INFO] Added paths from Mappings values: C:\Users\ckhar\Projects\orcapod-proj\testbackups, C:\Users\ckhar\Projects\orcapod-proj\README_backup.md
+2025-11-24 14:22:09 [INFO] Loading backup mappings
+2025-11-24 14:22:09 [INFO] Mapping loaded: C:\Users\ckhar\Projects\orcapod-proj\testfiles -> C:\Users\ckhar\Projects\orcapod-proj\testbackups
+2025-11-24 14:22:09 [INFO] Mapping loaded: C:\Users\ckhar\Projects\orcapod-proj\README.md -> C:\Users\ckhar\Projects\orcapod-proj\README_backup.md
+2025-11-24 14:22:09 [INFO] Syncing configurations with backups
+2025-11-24 14:22:09 [INFO] No newer backup found for 'C:\Users\ckhar\Projects\orcapod-proj\testfiles', backing up.
+2025-11-24 14:22:09 [ERROR] Failed to back up 'C:\Users\ckhar\Projects\orcapod-proj\testfiles' to 'C:\Users\ckhar\Projects\orcapod-proj\testbackups': Could not find file '/mnt/storage/Projects/orcapod/orcapod/C:\Users\ckhar\Projects\orcapod-proj\testfiles'.
+2025-11-24 14:22:09 [INFO] No newer backup found for 'C:\Users\ckhar\Projects\orcapod-proj\README.md', backing up.
+2025-11-24 14:22:09 [ERROR] Failed to back up 'C:\Users\ckhar\Projects\orcapod-proj\README.md' to 'C:\Users\ckhar\Projects\orcapod-proj\README_backup.md': Could not find file '/mnt/storage/Projects/orcapod/orcapod/C:\Users\ckhar\Projects\orcapod-proj\README.md'.
+2025-11-24 14:22:09 [INFO] MainService starting
+2025-11-24 14:22:09 [INFO] Status report: ServiceName=OrcapodMainService, RunCount=0
+2025-11-24 14:22:09 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\testfiles' does not exist as a file or directory, skipping.
+2025-11-24 14:22:09 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\README.md' does not exist as a file or directory, skipping.
+2025-11-24 14:22:09 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\testbackups' does not exist as a file or directory, skipping.
+2025-11-24 14:22:09 [WARNING] Path 'C:\Users\ckhar\Projects\orcapod-proj\README_backup.md' does not exist as a file or directory, skipping.
+2025-11-24 14:22:09 [INFO] Watchdog started.
+2025-11-24 14:22:16 [INFO] MainService stopping

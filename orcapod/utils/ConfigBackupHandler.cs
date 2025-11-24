@@ -8,7 +8,7 @@ namespace OrcaPod.Utils
 {
     public static class ConfigBackupHandler
     {
-    // Remove injected logger, use LogHandler
+        // Remove injected logger, use LogHandler
         private static Dictionary<string, string> _mappings = new Dictionary<string, string>();
 
         public static void Initialize(Microsoft.Extensions.Logging.ILogger<OrcaPod.Service.MainService> logger)
@@ -100,7 +100,7 @@ namespace OrcaPod.Utils
                 var destSubDir = Path.Combine(destDir, Path.GetFileName(dir));
                 CopyDirectory(dir, destSubDir, overwrite);
             }
-    }
+        }
 
         public static bool CheckIfNewerBackupExists(string sourcePath)
         {
@@ -169,8 +169,8 @@ namespace OrcaPod.Utils
             }
         }
 
-            // Helper method to restore directories recursively
-            private static void RestoreDirectory(string sourceDir, string destDir, bool overwrite)
+        // Helper method to restore directories recursively
+        private static void RestoreDirectory(string sourceDir, string destDir, bool overwrite)
         {
             Directory.CreateDirectory(destDir);
             foreach (var file in Directory.GetFiles(sourceDir))
@@ -183,7 +183,7 @@ namespace OrcaPod.Utils
                 var destSubDir = Path.Combine(destDir, Path.GetFileName(dir));
                 RestoreDirectory(dir, destSubDir, overwrite);
             }
-    }
+        }
 
         public static void SyncConfigs()
         {
@@ -197,7 +197,8 @@ namespace OrcaPod.Utils
                     LogHandler.LogInfo($"Newer backup found for '{sourcePath}', restoring.");
                     RestoreConfig(sourcePath);
                 }
-                else {
+                else
+                {
                     LogHandler.LogInfo($"No newer backup found for '{sourcePath}', backing up.");
                     BackupConfig(sourcePath);
                 }

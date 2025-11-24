@@ -1,30 +1,30 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj": {}
+    "/mnt/storage/Projects/orcapod/orcapod/orcapod.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj": {
+    "/mnt/storage/Projects/orcapod/orcapod/orcapod.csproj": {
       "version": "0.0.1",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj",
+        "projectUniqueName": "/mnt/storage/Projects/orcapod/orcapod/orcapod.csproj",
         "projectName": "orcapod",
-        "projectPath": "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\orcapod.csproj",
-        "packagesPath": "C:\\Users\\ckhar\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ckhar\\Projects\\orcapod-proj\\orcapod\\obj\\",
+        "projectPath": "/mnt/storage/Projects/orcapod/orcapod/orcapod.csproj",
+        "packagesPath": "/home/indigo/.nuget/packages/",
+        "outputPath": "/mnt/storage/Projects/orcapod/orcapod/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ckhar\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "/home/indigo/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
-          "net9.0-windows"
+          "net9.0"
         ],
         "sources": {
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
-          "net9.0-windows7.0": {
-            "targetAlias": "net9.0-windows",
+          "net9.0": {
+            "targetAlias": "net9.0",
             "projectReferences": {}
           }
         },
@@ -38,11 +38,11 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "9.0.100"
       },
       "frameworks": {
-        "net9.0-windows7.0": {
-          "targetAlias": "net9.0-windows",
+        "net9.0": {
+          "targetAlias": "net9.0",
           "dependencies": {
             "Microsoft.Extensions.Configuration.Binder": {
               "target": "Package",
@@ -84,15 +84,27 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[9.0.9, 9.0.9]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.linux-x64",
+              "version": "[9.0.9, 9.0.9]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
-            },
-            "Microsoft.WindowsDesktop.App.WindowsForms": {
-              "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.306/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "linux-x64": {
+          "#import": []
         }
       }
     }

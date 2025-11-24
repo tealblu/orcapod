@@ -47,7 +47,7 @@ namespace OrcaPod.Utils
 
         public bool IsRunning => _running;
 
-    // Remove injected logger, use LogHandler
+        // Remove injected logger, use LogHandler
 
         public Watchdog(Microsoft.Extensions.Logging.ILogger<Service.MainService> logger)
         {

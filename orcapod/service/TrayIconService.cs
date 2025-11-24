@@ -1,4 +1,3 @@
-// ...existing code...
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Orcapod.Utils;
@@ -7,8 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 #if WINDOWS
 using System.Windows.Forms;
-#elif LINUX
-using H.NotifyIcon.Core;
 #endif
 
 namespace OrcaPod.Service
@@ -17,11 +14,12 @@ namespace OrcaPod.Service
     public class TrayIconService : IHostedService, IDisposable
     {
         private readonly IHostApplicationLifetime _lifetime;
-    // Remove injected logger, use LogHandler
+        // Remove injected logger, use LogHandler
 #if WINDOWS
         private NotifyIcon? _notifyIcon;
 #elif LINUX
-        private TaskbarIcon? _notifyIcon;
+        // TODO: Implement Linux tray icon using H.NotifyIcon or alternative
+        // private TaskbarIcon? _notifyIcon;
 #endif
 
         public TrayIconService(IHostApplicationLifetime lifetime, ILogger<TrayIconService> logger)
@@ -52,9 +50,8 @@ namespace OrcaPod.Service
                     _notifyIcon?.ShowBalloonTip(3000, "OrcaPod", "Running in background", ToolTipIcon.Info);
                 };
 #elif LINUX
-                _notifyIcon = new TaskbarIcon();
-                _notifyIcon.ToolTipText = "OrcaPod (per-user)";
-                // TODO: Set icon and menu for Linux tray
+                // TODO: Implement Linux tray icon
+                LogHandler.LogInfo("Tray icon not yet implemented for Linux");
 #endif
                 return Task.CompletedTask;
             }
@@ -84,11 +81,7 @@ namespace OrcaPod.Service
                     _notifyIcon = null;
                 }
 #elif LINUX
-                if (_notifyIcon != null)
-                {
-                    _notifyIcon.Dispose();
-                    _notifyIcon = null;
-                }
+                // TODO: Dispose Linux tray icon when implemented
 #endif
             }
             catch { }

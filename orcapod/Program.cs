@@ -117,7 +117,7 @@ namespace OrcaPod
             public bool ExitAfter { get; set; } = false;
         }
 
-    private static bool ShowMenu()
+        private static bool ShowMenu()
         {
             var shouldRunHost = false;
             var menuOptions = new[]
