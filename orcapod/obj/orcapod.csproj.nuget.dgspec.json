@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/mnt/storage/Projects/orcapod/orcapod/orcapod.csproj": {}
+    "/home/indigo/Projects/orcapod/orcapod/orcapod.csproj": {}
   },
   "projects": {
-    "/mnt/storage/Projects/orcapod/orcapod/orcapod.csproj": {
+    "/home/indigo/Projects/orcapod/orcapod/orcapod.csproj": {
       "version": "0.0.1",
       "restore": {
-        "projectUniqueName": "/mnt/storage/Projects/orcapod/orcapod/orcapod.csproj",
+        "projectUniqueName": "/home/indigo/Projects/orcapod/orcapod/orcapod.csproj",
         "projectName": "orcapod",
-        "projectPath": "/mnt/storage/Projects/orcapod/orcapod/orcapod.csproj",
+        "projectPath": "/home/indigo/Projects/orcapod/orcapod/orcapod.csproj",
         "packagesPath": "/home/indigo/.nuget/packages/",
-        "outputPath": "/mnt/storage/Projects/orcapod/orcapod/obj/",
+        "outputPath": "/home/indigo/Projects/orcapod/orcapod/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/indigo/.nuget/NuGet/NuGet.Config"
@@ -88,10 +88,6 @@
             {
               "name": "Microsoft.AspNetCore.App.Ref",
               "version": "[9.0.9, 9.0.9]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.linux-x64",
-              "version": "[9.0.9, 9.0.9]"
             }
           ],
           "frameworkReferences": {
@@ -100,11 +96,6 @@
             }
           },
           "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "linux-x64": {
-          "#import": []
         }
       }
     }

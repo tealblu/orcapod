@@ -6,10 +6,10 @@ OrcaPod is a tool designed to backup and sync configuration files for Orca Slice
 
 ## Features
 
--   **Automatic Process Monitoring**: OrcaPod automatically detects when Orca Slicer exits and shuts down gracefully
+-   Automatic Process Monitoring: OrcaPod automatically detects when Orca Slicer starts and stops
 -   Backup Orca Slicer config files
 -   Sync configs across multiple devices
--   Support for additional app configs
+-   Support for additional applications
 -   Easy restore and migration
 -   Cross-platform support (Windows, Linux, macOS)
 
