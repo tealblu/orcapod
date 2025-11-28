@@ -27,7 +27,7 @@ OrcaPod is a tool designed to backup and sync configuration files for Orca Slice
 
 1. Clone this repository:
     ```bash
-    git clone https://github.com/yourusername/orcapod-proj.git
+    git clone https://github.com/tealblu/orcapod.git
     ```
 2. Setup instructions coming in the future!
 
