@@ -6,6 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 #if WINDOWS
 using System.Windows.Forms;
+#elif LINUX
+using H.NotifyIcon.Core;
+using System.IO;
 #endif
 
 namespace OrcaPod.Service
@@ -18,8 +21,7 @@ namespace OrcaPod.Service
 #if WINDOWS
         private NotifyIcon? _notifyIcon;
 #elif LINUX
-        // TODO: Implement Linux tray icon using H.NotifyIcon or alternative
-        // private TaskbarIcon? _notifyIcon;
+        private TrayIcon? _trayIcon;
 #endif
 
         public TrayIconService(IHostApplicationLifetime lifetime, ILogger<TrayIconService> logger)
@@ -50,8 +52,23 @@ namespace OrcaPod.Service
                     _notifyIcon?.ShowBalloonTip(3000, "OrcaPod", "Running in background", ToolTipIcon.Info);
                 };
 #elif LINUX
-                // TODO: Implement Linux tray icon
-                LogHandler.LogInfo("Tray icon not yet implemented for Linux");
+                _trayIcon = new TrayIcon
+                {
+                    ToolTip = "OrcaPod (per-user)",
+                    Icon = IntPtr.Zero  // TODO: Load icon properly
+                };
+                
+                // Handle clicks
+                _trayIcon.MessageWindow.MouseEventReceived += (s, e) =>
+                {
+                    if (e.MouseEvent == MouseEvent.IconLeftMouseUp)
+                    {
+                        LogHandler.LogInfo("OrcaPod is running in background");
+                    }
+                };
+                
+                _trayIcon.Create();
+                LogHandler.LogInfo("Linux tray icon created successfully");
 #endif
                 return Task.CompletedTask;
             }
@@ -81,10 +98,41 @@ namespace OrcaPod.Service
                     _notifyIcon = null;
                 }
 #elif LINUX
-                // TODO: Dispose Linux tray icon when implemented
+                if (_trayIcon != null)
+                {
+                    _trayIcon.Dispose();
+                    _trayIcon = null;
+                }
 #endif
             }
             catch { }
         }
+
+#if LINUX
+        private string GetIconPath()
+        {
+            // Try to find a suitable icon
+            var iconPaths = new[]
+            {
+                "/usr/share/pixmaps/orca.png",
+                "/usr/share/icons/hicolor/48x48/apps/orca.png",
+                "/usr/share/icons/gnome/48x48/apps/application-x-executable.png",
+                "/usr/share/icons/hicolor/48x48/apps/application-x-executable.png"
+            };
+
+            foreach (var path in iconPaths)
+            {
+                if (File.Exists(path))
+                {
+                    LogHandler.LogInfo($"Using icon: {path}");
+                    return path;
+                }
+            }
+
+            // Fallback to a generic icon name that should be available on most systems
+            LogHandler.LogInfo("Using fallback icon: application-x-executable");
+            return "application-x-executable";
+        }
+#endif
     }
 }

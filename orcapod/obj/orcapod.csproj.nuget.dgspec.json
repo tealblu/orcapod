@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/indigo/Projects/orcapod/orcapod/orcapod.csproj": {}
+    "/mnt/storage/Projects/orcapod/orcapod/orcapod.csproj": {}
   },
   "projects": {
-    "/home/indigo/Projects/orcapod/orcapod/orcapod.csproj": {
+    "/mnt/storage/Projects/orcapod/orcapod/orcapod.csproj": {
       "version": "0.0.1",
       "restore": {
-        "projectUniqueName": "/home/indigo/Projects/orcapod/orcapod/orcapod.csproj",
+        "projectUniqueName": "/mnt/storage/Projects/orcapod/orcapod/orcapod.csproj",
         "projectName": "orcapod",
-        "projectPath": "/home/indigo/Projects/orcapod/orcapod/orcapod.csproj",
+        "projectPath": "/mnt/storage/Projects/orcapod/orcapod/orcapod.csproj",
         "packagesPath": "/home/indigo/.nuget/packages/",
-        "outputPath": "/home/indigo/Projects/orcapod/orcapod/obj/",
+        "outputPath": "/mnt/storage/Projects/orcapod/orcapod/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/indigo/.nuget/NuGet/NuGet.Config"
@@ -44,6 +44,10 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "H.NotifyIcon": {
+              "target": "Package",
+              "version": "[2.1.3, )"
+            },
             "Microsoft.Extensions.Configuration.Binder": {
               "target": "Package",
               "version": "[9.0.10, )"

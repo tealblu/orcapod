@@ -83,10 +83,7 @@ namespace OrcaPod
                     services.AddSingleton<MainService>();
                     services.AddSingleton<Watchdog>();
                     services.AddHostedService<HostedMainService>();
-                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                    {
-                        services.AddHostedService<TrayIconService>();
-                    }
+                    services.AddHostedService<TrayIconService>();
                 });
 
         private static void HandleInstall()

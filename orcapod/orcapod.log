@@ -100,3 +100,37 @@
 2025-11-24 14:50:18 [INFO] System .desktop file detected. Creating local copy at: /home/indigo/.local/share/applications/OrcaSlicer.desktop
 2025-11-24 14:50:18 [INFO] Modified .desktop file: /home/indigo/.local/share/applications/OrcaSlicer.desktop
 2025-11-24 14:50:20 [INFO] Exiting.
+2025-11-29 16:10:02 [INFO] Program target found for autostart: OrcaSlicer
+2025-11-29 16:10:04 [INFO] Console mode enabled.
+2025-11-29 16:10:04 [INFO] Starting OrcaPod host...
+2025-11-29 16:10:04 [INFO] Reading settings from configuration file.
+2025-11-29 16:10:04 [INFO] Monitoring processes: OrcaSlicer
+2025-11-29 16:10:04 [INFO] Added paths from Mappings keys: C:\Users\ckhar\Projects\orcapod-proj\testfiles, C:\Users\ckhar\Projects\orcapod-proj\README.md
+2025-11-29 16:10:04 [INFO] Added paths from Mappings values: C:\Users\ckhar\Projects\orcapod-proj\testbackups, C:\Users\ckhar\Projects\orcapod-proj\README_backup.md
+2025-11-29 16:10:04 [INFO] Loading backup mappings
+2025-11-29 16:10:04 [INFO] Mapping loaded: C:\Users\ckhar\Projects\orcapod-proj\testfiles -> C:\Users\ckhar\Projects\orcapod-proj\testbackups
+2025-11-29 16:10:04 [INFO] Mapping loaded: C:\Users\ckhar\Projects\orcapod-proj\README.md -> C:\Users\ckhar\Projects\orcapod-proj\README_backup.md
+2025-11-29 16:10:04 [INFO] Syncing configurations with backups
+2025-11-29 16:10:04 [INFO] No newer backup found for 'C:\Users\ckhar\Projects\orcapod-proj\testfiles', backing up.
+2025-11-29 16:10:04 [ERROR] Failed to back up 'C:\Users\ckhar\Projects\orcapod-proj\testfiles' to 'C:\Users\ckhar\Projects\orcapod-proj\testbackups': Could not find file '/mnt/storage/Projects/orcapod/orcapod/C:\Users\ckhar\Projects\orcapod-proj\testfiles'.
+2025-11-29 16:10:04 [INFO] No newer backup found for 'C:\Users\ckhar\Projects\orcapod-proj\README.md', backing up.
+2025-11-29 16:10:04 [ERROR] Failed to back up 'C:\Users\ckhar\Projects\orcapod-proj\README.md' to 'C:\Users\ckhar\Projects\orcapod-proj\README_backup.md': Could not find file '/mnt/storage/Projects/orcapod/orcapod/C:\Users\ckhar\Projects\orcapod-proj\README.md'.
+2025-11-29 16:10:04 [INFO] MainService starting
+2025-11-29 16:10:04 [INFO] Status report: ServiceName=OrcapodMainService, RunCount=0
+2025-11-29 16:10:04 [INFO] Process monitoring enabled. Checking for: OrcaSlicer
+2025-11-29 16:10:04 [INFO] Starting TrayIconService
+2025-11-29 16:10:04 [ERROR] Failed to start tray icon: System.DllNotFoundException: Unable to load shared library 'USER32.dll' or one of its dependencies. In order to help diagnose loading problems, consider using a tool like strace. If you're using glibc, consider setting the LD_DEBUG environment variable: 
+/usr/share/dotnet/shared/Microsoft.NETCore.App/9.0.9/USER32.dll.so: cannot open shared object file: No such file or directory
+/usr/share/dotnet/shared/Microsoft.NETCore.App/9.0.9/libUSER32.dll.so: cannot open shared object file: No such file or directory
+/usr/share/dotnet/shared/Microsoft.NETCore.App/9.0.9/USER32.dll: cannot open shared object file: No such file or directory
+/usr/share/dotnet/shared/Microsoft.NETCore.App/9.0.9/libUSER32.dll: cannot open shared object file: No such file or directory
+
+   at Windows.Win32.PInvoke.RegisterClass(WNDCLASSW& lpWndClass)
+   at H.NotifyIcon.Core.MessageWindow.Create() in /_/src/libs/H.NotifyIcon/Core/MessageWindow.cs:line 125
+   at H.NotifyIcon.Core.TrayIcon.Create() in /_/src/libs/H.NotifyIcon/Core/TrayIcon.cs:line 309
+   at OrcaPod.Service.TrayIconService.StartAsync(CancellationToken cancellationToken) in /mnt/storage/Projects/orcapod/orcapod/service/TrayIconService.cs:line 70
+2025-11-29 16:10:04 [WARNING] None of the monitored processes are currently running.
+2025-11-29 16:10:04 [INFO] No monitored processes are running. Shutting down.
+2025-11-29 16:10:04 [INFO] All monitored processes have exited. Requesting application shutdown.
+2025-11-29 16:10:04 [INFO] MainService stopping
+2025-11-29 16:10:04 [INFO] Stopping TrayIconService

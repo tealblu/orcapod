@@ -48,6 +48,16 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
   </ItemGroup>
 
+  <!-- Linux tray icon support -->
+  <ItemGroup Condition="'$(OS)' != 'Windows_NT'">
+    <PackageReference Include="H.NotifyIcon" Version="2.1.3" />
+  </ItemGroup>
+
+  <!-- Windows tray icon support (System.Windows.Forms is already included via UseWindowsForms) -->
+  <ItemGroup Condition="'$(OS)' == 'Windows_NT'">
+    <!-- No additional packages needed for Windows Forms NotifyIcon -->
+  </ItemGroup>
+
   <ItemGroup>
     <None Update="settings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
