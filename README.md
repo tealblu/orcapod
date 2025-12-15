@@ -2,7 +2,7 @@
 
 OrcaPod is a tool designed to backup and sync configuration files for Orca Slicer, with compatibility for other applications. It helps users maintain consistent settings across devices and ensures easy restoration of configs.
 
-Warning: not currently fully functional!
+Warning: not currently fully functional!!
 
 ![image](https://img.shields.io/badge/C%23-239120?style=for-the-badge&logo=csharp&logoColor=white)
 
